@@ -1,142 +1,78 @@
-# CiteCache — Verified RAG with Semantic Cache
+# CiteCache — Agentic RAG Support Copilot & Semantic Cache Gateway
 
-A support/knowledge-base Q&A API where every query first checks a
-semantic cache; on a miss, it runs hybrid retrieval → rerank →
-grounded generation with citations → citation verification →
-confidence scoring, and writes the verified answer back to cache.
+## Overview
+CiteCache is a production-oriented Retrieval-Augmented Generation (RAG) system designed for support knowledge bases.  
+It combines hybrid retrieval, reranking, and semantic caching to deliver accurate, grounded, and low-latency responses.
 
-## Current Status: Phase 2 — Hybrid Retrieval + Semantic Cache
+---
 
-```
-citecache/
-  .env.example
-  requirements.txt
-  docker-compose.yml          # (for later — not needed in phase 2)
-  app/
-    config.py                  # central settings, loaded from .env
-    ingestion/
-      chunking.py              # heading-based + fixed-size-overlap chunker
-      embeddings.py            # local (sentence-transformers) or OpenAI
-      vector_store.py          # Qdrant wrapper: embedded or server mode
-    retrieval/
-      bm25_index.py            # BM25 sparse index built from Qdrant data
-      hybrid.py                # dense + sparse fusion with Reciprocal Rank Fusion
-    cache/
-      semantic_cache.py        # Qdrant-backed semantic cache (no Redis needed)
-  data/
-    docs/                      # 8 sample support docs (markdown)
-  scripts/
-    ingest.py                  # CLI: chunk + embed + upsert into Qdrant
-    test_retrieval.py          # phase 1 sanity check (dense-only)
-    test_hybrid.py             # phase 2: dense vs hybrid side-by-side
-    test_cache.py              # phase 2: semantic cache lifecycle test
-```
+## Features
 
-## Setup (Local — No Docker Required)
+- Hybrid Retrieval
+  - Dense retrieval using embeddings (cosine similarity)
+  - Sparse retrieval using BM25
+- Fusion Layer
+  - Reciprocal Rank Fusion (RRF) to combine dense + sparse results
+- Reranking
+  - Cross-encoder reranking for high-precision final results
+- Semantic Caching
+  - Redis-based cache for repeated/similar queries
+- Grounded Responses
+  - Source-based retrieval for citation support
+- Modular Architecture
+  - Clean separation of ingestion, retrieval, fusion, and caching layers
 
-### 1. Create virtual environment and install dependencies
+---
 
-```powershell
-cd C:\Users\SHREYAS\OneDrive\Desktop\rag
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
+## Architecture
 
-### 2. Copy the environment file
+Query → Dense Retrieval + Sparse Retrieval → RRF Fusion → Cross-Encoder Rerank → Top Results → Cache Layer → Response
 
-```powershell
-copy .env.example .env
-```
+---
 
-The defaults work with zero API keys — embeddings run locally via
-`sentence-transformers` (`BAAI/bge-small-en-v1.5`), and Qdrant runs
-in embedded mode (data stored in `./qdrant_data/`, no server needed).
+## Tech Stack
 
-### 3. Ingest the sample corpus
+- Python (FastAPI)
+- Qdrant (Vector Database)
+- Redis (Semantic Cache)
+- SentenceTransformers (Embeddings + Reranker)
+- Rank-BM25 (Sparse Retrieval)
+- Streamlit (Dashboard)
 
-```powershell
-python -m scripts.ingest --source data/docs --rebuild
-```
+---
 
-First run will download the `bge-small-en-v1.5` model (~130MB) —
-this only happens once. You should see output like:
 
-```
-Chunking 8 documents...
-  password_reset_policy.md: 4 chunks (account_security)
-  sso_enterprise_login.md: 4 chunks (account_security)
-  ...
-Embedding 33 chunks (provider=local)...
-Indexed 33 chunks from 8 documents into 'citecache_docs'.
-Manifest written to data/index_manifest.json
-```
 
-### 4. Run the dense-only retrieval sanity check (Phase 1)
+## How It Works
 
-```powershell
-python -m scripts.test_retrieval
-```
+### Dense Retrieval
+- Uses embedding similarity (cosine similarity)
+- Captures semantic meaning
 
-The SSO query should return chunks from `sso_enterprise_login.md`,
-not `password_reset_policy.md`.
+### Sparse Retrieval (BM25)
+- Keyword-based matching
+- Captures exact term overlap
 
-### 5. Run the hybrid retrieval comparison (Phase 2)
+### Fusion (RRF)
+- Combines rankings instead of raw scores
+- Rewards documents retrieved by both methods
 
-```powershell
-python -m scripts.test_hybrid
-```
+### Reranking
+- Cross-encoder scores query-document pairs
+- Produces final top-k results
 
-Side-by-side dense-only vs hybrid (BM25 + dense + RRF) results for
-8 queries. Hybrid should match or beat dense on all queries, and
-notably improve on keyword-heavy ones like "API error code 429."
+### Caching
+- Redis stores query-response pairs
+- Reduces latency and LLM calls
 
-### 6. Run the semantic cache lifecycle test (Phase 2)
+---
 
-```powershell
-python -m scripts.test_cache
-```
+## Use Cases
 
-Demonstrates: MISS → write → HIT → semantic HIT → MISS.
+- Customer support copilots
+- Knowledge base assistants
+- FAQ automation systems
+- Internal documentation search
 
-## Design Decisions Worth Remembering for Interviews
+---
 
-- **Two Qdrant collections, not one with a type filter.** The
-  document collection and the semantic cache collection are kept
-  separate. This keeps cache lookups fast and makes it structurally
-  impossible for a cached Q&A pair to accidentally get retrieved as
-  if it were a source document.
-- **Embedded Qdrant for development, server mode for production.**
-  One config flag (`QDRANT_MODE=embedded` vs `server`) switches
-  between local file storage and a running Qdrant server. Zero
-  infrastructure setup for development.
-- **Heading-based chunking first, fixed-size-overlap as fallback.**
-  Every chunk records which strategy produced it (`chunk.strategy`),
-  so retrieval quality across strategies can be compared later in
-  the eval phase.
-- **RRF instead of score blending for hybrid retrieval.** Dense
-  cosine and BM25 scores are on different scales, so a weighted
-  average needs tuning. RRF uses ranks, not scores — no alpha to
-  tune. Same approach as Elasticsearch's RRF.
-- **BM25 index built from Qdrant at startup.** For a demo corpus
-  this is fine (<100ms). A production system would build it
-  incrementally at ingest time or use Qdrant's native sparse vectors.
-- **Semantic cache uses Qdrant, not Redis.** Zero additional
-  infrastructure. When adding Docker later, swapping in Redis is a
-  one-file change.
-- **The SSO doc is a deliberate near-duplicate trap.** It shares
-  vocabulary with the password reset doc but describes a completely
-  different flow.
-
-## Phase Roadmap
-
-| Phase | Focus | Status |
-|-------|-------|--------|
-| 1 | Scaffold, ingestion, indexing | ✅ Done |
-| 2 | Hybrid retrieval (BM25 + RRF) + semantic cache | ✅ Done |
-| 3 | LangGraph state machine (10 nodes) | 🔲 Next |
-| 4 | LLM generation + citation verification | 🔲 |
-| 5 | Cache policy, TTL, confidence gating | 🔲 |
-| 6 | Eval (golden set + RAGAS/DeepEval) | 🔲 |
-| 7 | FastAPI + Streamlit dashboard | 🔲 |
-| 8 | Docker Compose + deployment | 🔲 |
