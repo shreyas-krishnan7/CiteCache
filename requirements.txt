@@ -1,0 +1,17 @@
+# Phase 1+2 dependencies. FastAPI/LangGraph/Streamlit are listed here
+# so the environment is ready for later phases, but only the ingestion
+# and retrieval path is exercised in phase 2.
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+qdrant-client==1.11.0
+sentence-transformers==3.1.1
+rank-bm25==0.2.2
+pydantic==2.9.2
+python-dotenv==1.0.1
+langgraph==0.2.34
+openai==1.51.0
+anthropic==0.36.0
+streamlit==1.38.0
+pytest==8.3.3
+tiktoken==0.8.0
