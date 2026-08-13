@@ -1,14 +1,4 @@
-"""
-Quick manual sanity check for phase 1 (updated for embedded Qdrant).
 
-Confirms the embed -> Qdrant pipeline is wired correctly by running a
-few dense-retrieval-only queries against the indexed corpus, including
-one deliberate trap query (SSO login) that should NOT surface the
-consumer password-reset chunk as its top result.
-
-Usage:
-    python -m scripts.test_retrieval
-"""
 from __future__ import annotations
 
 from app.config import settings

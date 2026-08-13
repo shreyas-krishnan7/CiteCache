@@ -1,21 +1,4 @@
-"""
-Semantic cache lifecycle test.
 
-Demonstrates the full cache cycle:
-  1. Query → cache MISS (nothing cached yet)
-  2. Write a simulated verified answer to cache
-  3. Same query again → cache HIT (exact match)
-  4. Slightly rephrased query → cache HIT (semantic similarity)
-  5. Completely different query → cache MISS
-
-This proves the cache works end-to-end without needing LLM generation
-(which comes in Phase 4). The "answer" written to cache here is a
-hardcoded string — in the real pipeline, it will be the output of the
-generate + verify + score nodes.
-
-Usage:
-    python -m scripts.test_cache
-"""
 from __future__ import annotations
 
 import time

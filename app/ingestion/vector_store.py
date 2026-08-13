@@ -1,18 +1,4 @@
-"""
-Thin wrapper around Qdrant.
 
-The document collection and the semantic cache collection are kept
-as two SEPARATE Qdrant collections (rather than one collection with
-a "type" filter). This is a deliberate design choice: it keeps cache
-lookups fast (small collection, no filtering needed) and makes it
-structurally impossible to accidentally retrieve a cached Q&A pair
-as if it were a source document during retrieval.
-
-Supports two modes:
-  - "embedded" (default): Qdrant runs as a local file store — no
-    server or Docker needed. Data is persisted under qdrant_data_path.
-  - "server": connects to a running Qdrant server (Docker, cloud, etc).
-"""
 from __future__ import annotations
 
 from functools import lru_cache

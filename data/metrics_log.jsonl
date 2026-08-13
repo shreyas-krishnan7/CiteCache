@@ -1,0 +1,17 @@
+{"timestamp": "2026-08-13T09:31:56.107966+00:00", "query": "How do I reset my password?", "source": "generated", "confidence": 0.9014085433329759, "latency_ms": 32276.985500000592, "cached_this_run": true}
+{"timestamp": "2026-08-13T09:32:00.192136+00:00", "query": "What is the API rate limit?", "source": "generated", "confidence": 0.7902903918630146, "latency_ms": 4078.915499998402, "cached_this_run": true}
+{"timestamp": "2026-08-13T09:32:06.152196+00:00", "query": "How does SSO login work for enterprise accounts?", "source": "generated", "confidence": 0.9236316453580318, "latency_ms": 5955.939200001012, "cached_this_run": true}
+{"timestamp": "2026-08-13T09:32:06.252494+00:00", "query": "How do I reset my password?", "source": "cache", "confidence": 0.9014085433329759, "latency_ms": 94.38080000109039, "cached_this_run": null}
+{"timestamp": "2026-08-13T09:32:10.751061+00:00", "query": "Can I get a refund after 30 days?", "source": "generated", "confidence": 0.9314351253218733, "latency_ms": 4493.8726000000315, "cached_this_run": true}
+{"timestamp": "2026-08-13T09:32:10.786076+00:00", "query": "I forgot my password, how do I reset it?", "source": "cache", "confidence": 0.9014085433329759, "latency_ms": 32.3151999982656, "cached_this_run": null}
+{"timestamp": "2026-08-13T09:32:10.831103+00:00", "query": "How do I reset my password?", "source": "cache", "confidence": 0.9014085433329759, "latency_ms": 42.50619999947958, "cached_this_run": null}
+{"timestamp": "2026-08-13T09:32:11.978078+00:00", "query": "How do I export my account data as a CSV file?", "source": "generated", "confidence": 0.2949860961164502, "latency_ms": 1142.8904999993392, "cached_this_run": false}
+{"timestamp": "2026-08-13T09:32:12.048540+00:00", "query": "What is the API rate limit?", "source": "cache", "confidence": 0.7902903918630146, "latency_ms": 67.7417000006244, "cached_this_run": null}
+{"timestamp": "2026-08-13T09:32:17.542021+00:00", "query": "How does enterprise SSO work?", "source": "generated", "confidence": 0.9220263926848133, "latency_ms": 5489.975400003459, "cached_this_run": true}
+{"timestamp": "2026-08-13T09:32:17.605542+00:00", "query": "Can I get a refund after 30 days?", "source": "cache", "confidence": 0.9314351253218733, "latency_ms": 59.47329999980866, "cached_this_run": null}
+{"timestamp": "2026-08-13T09:32:18.691484+00:00", "query": "How do I export my account data as a CSV file?", "source": "generated", "confidence": 0.2949860961164502, "latency_ms": 1081.9678000007116, "cached_this_run": false}
+{"timestamp": "2026-08-13T10:01:42.468708+00:00", "query": "what is the role about ?", "source": "generated", "confidence": 0.8510105083706496, "latency_ms": 4412.547500000073, "cached_this_run": true}
+{"timestamp": "2026-08-13T10:02:17.593410+00:00", "query": "who am i", "source": "generated", "confidence": 0.2724076821031638, "latency_ms": 1546.8000000000757, "cached_this_run": false}
+{"timestamp": "2026-08-13T10:02:48.826359+00:00", "query": "role description ?", "source": "generated", "confidence": 0.8456774817627408, "latency_ms": 5376.453800003219, "cached_this_run": true}
+{"timestamp": "2026-08-13T10:03:14.365653+00:00", "query": "what is the role about ?", "source": "cache", "confidence": 0.8510105083706496, "latency_ms": 82.04099999784376, "cached_this_run": null}
+{"timestamp": "2026-08-13T10:03:44.296140+00:00", "query": "tell me name of the company", "source": "generated", "confidence": 0.6777311503220078, "latency_ms": 3606.939900000725, "cached_this_run": false}

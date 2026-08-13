@@ -1,23 +1,4 @@
-"""
-Qdrant-backed semantic cache for CiteCache.
 
-Uses a separate Qdrant collection ("citecache_cache") to store
-verified Q&A pairs keyed by their query embedding.  This is one of
-the two cache strategies from the original design doc (the other
-being Redis + cosine similarity).  Using Qdrant for both the doc
-store and the cache means zero additional infrastructure in dev —
-when you add Docker later, swapping in Redis is a one-file change.
-
-Cache lifecycle:
-  1. cache_lookup(query) → embed query, search cache collection.
-     If top hit score ≥ threshold → HIT, return cached answer.
-  2. cache_write(query, answer, metadata) → embed query, upsert into
-     cache collection with the answer + metadata as payload.
-
-Why a separate collection instead of a metadata filter on the doc
-collection?  See vector_store.py docstring — TL;DR: keeps cache
-lookups fast, prevents a cached Q&A from polluting retrieval.
-"""
 from __future__ import annotations
 
 import uuid
@@ -144,8 +125,35 @@ def cache_write(
 
 
 def cache_clear(client: QdrantClient) -> None:
-    """Drop and recreate the cache collection. Useful for testing."""
-    try:
-        client.delete_collection(settings.cache_collection)
-    except Exception:
-        pass
+    """
+    Removes every point from the cache collection, rather than
+    dropping and recreating the collection itself.
+
+    Why: on Windows, embedded (on-disk) Qdrant's delete_collection()
+    can fail to release its file handles on the collection's storage
+    folder. No exception is raised, but the folder isn't actually
+    removed -- the next ensure_collection() call finds it still there
+    and reopens it with the old data intact. Deleting points
+    individually never touches the collection's folder structure, so
+    it doesn't hit that failure mode.
+    """
+    existing = [c.name for c in client.get_collections().collections]
+    if settings.cache_collection not in existing:
+        return
+
+    point_ids = []
+    offset = None
+    while True:
+        points, offset = client.scroll(
+            collection_name=settings.cache_collection,
+            limit=256,
+            offset=offset,
+            with_payload=False,
+            with_vectors=False,
+        )
+        point_ids.extend(p.id for p in points)
+        if offset is None:
+            break
+
+    if point_ids:
+        client.delete(collection_name=settings.cache_collection, points_selector=point_ids)

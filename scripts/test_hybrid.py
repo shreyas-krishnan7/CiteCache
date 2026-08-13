@@ -1,15 +1,4 @@
-"""
-Phase 2 core test: side-by-side dense-only vs hybrid retrieval.
 
-For each query, prints results from both retrievers so you can see
-where hybrid (BM25 + dense with RRF) improves over dense-only.
-Expected wins for hybrid: keyword-heavy queries like "API rate limit
-429 error" where BM25 excels, and the SSO/password trap where
-combining semantic + lexical signals improves discrimination.
-
-Usage:
-    python -m scripts.test_hybrid
-"""
 from __future__ import annotations
 
 import time

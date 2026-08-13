@@ -1,11 +1,4 @@
-"""
-Central configuration for CiteCache.
 
-Every setting has a working default so the project runs out of the
-box with zero API keys (local embeddings, no LLM calls yet in phase 1).
-Later phases read llm_model / api keys / cache thresholds from here too,
-so this file doesn't need to change as the project grows.
-"""
 from __future__ import annotations
 
 import os
@@ -32,11 +25,15 @@ class Settings:
     openai_embedding_model: str = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
     # --- LLM (phase 3+) ---
-    llm_provider: str = os.getenv("LLM_PROVIDER", "openai")  # "openai" or "anthropic"
+    llm_provider: str = os.getenv("LLM_PROVIDER", "openai")  # "openai", "anthropic", "groq", or "gemini"
     openai_api_key: str | None = os.getenv("OPENAI_API_KEY") or None
     anthropic_api_key: str | None = os.getenv("ANTHROPIC_API_KEY") or None
+    groq_api_key: str | None = os.getenv("GROQ_API_KEY") or None
+    gemini_api_key: str | None = os.getenv("GEMINI_API_KEY") or None
     llm_model: str = os.getenv("LLM_MODEL", "gpt-4o-mini")
     anthropic_model: str = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
+    groq_model: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
     # --- Generation (phase 3) ---
     generation_max_tokens: int = int(os.getenv("GENERATION_MAX_TOKENS", "800"))
@@ -55,6 +52,9 @@ class Settings:
     confidence_retrieval_weight: float = float(os.getenv("CONFIDENCE_RETRIEVAL_WEIGHT", "0.4"))
     confidence_citation_weight: float = float(os.getenv("CONFIDENCE_CITATION_WEIGHT", "0.4"))
     confidence_completeness_weight: float = float(os.getenv("CONFIDENCE_COMPLETENESS_WEIGHT", "0.2"))
+
+    # --- Metrics / instrumentation (phase 5) ---
+    metrics_log_path: str = os.getenv("METRICS_LOG_PATH", "data/metrics_log.jsonl")
 
     # --- Cache policy (phase 5+) ---
     cache_similarity_threshold: float = float(os.getenv("CACHE_SIMILARITY_THRESHOLD", "0.95"))

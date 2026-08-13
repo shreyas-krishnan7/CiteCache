@@ -1,22 +1,4 @@
-"""
-Hybrid retrieval: dense (Qdrant) + sparse (BM25), fused with
-Reciprocal Rank Fusion (RRF).
 
-Why RRF instead of simple score blending?
-  - Dense cosine scores and BM25 scores live on completely different
-    scales, so a weighted average requires a tuned alpha.
-  - RRF only needs the *rank* from each retriever, not the raw score.
-  - The formula is: RRF_score(d) = Σ 1/(k + rank_in_list)
-    where k is a constant (default 60) that dampens the influence of
-    high-ranking outliers.
-  - This is the same fusion strategy used in Elasticsearch's RRF and
-    is one of the go-to answers in system design interviews when
-    someone asks "how do you combine retrieval signals?"
-
-This module is deliberately kept as a stateless function so it can be
-called from both CLI scripts (Phase 2 testing) and LangGraph nodes
-(Phase 3 orchestration) without any coupling.
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass

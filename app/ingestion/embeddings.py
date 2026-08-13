@@ -1,11 +1,4 @@
-"""
-Embedding provider abstraction.
 
-Defaults to a local sentence-transformers model so the project runs
-with zero API keys. Set EMBEDDING_PROVIDER=openai (and OPENAI_API_KEY)
-in .env to switch to OpenAI embeddings instead — useful later when
-comparing embedding quality/cost as part of the case study.
-"""
 from __future__ import annotations
 
 from functools import lru_cache

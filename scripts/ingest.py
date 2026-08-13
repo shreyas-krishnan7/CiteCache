@@ -1,15 +1,4 @@
-"""
-Ingestion CLI.
 
-Usage:
-    python -m scripts.ingest --source data/docs --rebuild
-
-Reads every .md file under --source, chunks it, embeds every chunk,
-and upserts into the Qdrant document collection. Also writes a JSON
-manifest recording what was indexed, when, and with which embedding
-model — this is what a later "RAG freshness monitor" extension would
-diff against to detect stale documents.
-"""
 from __future__ import annotations
 
 import argparse

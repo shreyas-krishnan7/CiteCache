@@ -1,18 +1,4 @@
-"""
-Chunking strategies for CiteCache document ingestion.
 
-Two strategies are implemented, and every chunk records which one
-produced it. That matters later (phase 6 eval) when comparing
-retrieval quality across chunking strategies:
-
-  1. Heading-based: split on markdown '#' headings first. Keeps a
-     semantically coherent section (e.g. "Reset your password")
-     together in one chunk whenever it's small enough.
-  2. Fixed-size + overlap: fallback for any heading section that's
-     still too large. Token-aware, with configurable overlap so a
-     claim near a chunk boundary isn't cut off in one chunk and
-     missing from its neighbour.
-"""
 from __future__ import annotations
 
 import re

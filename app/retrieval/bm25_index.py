@@ -1,17 +1,4 @@
-"""
-BM25 sparse index for CiteCache hybrid retrieval.
 
-Builds an in-memory BM25 index from all documents already stored in
-the Qdrant document collection.  The index is built once at startup
-(or when a retrieval script runs) by scrolling every point out of
-Qdrant, tokenizing the text, and feeding it to rank_bm25.BM25Okapi.
-
-For a demo corpus of ~33 chunks this is fast (<100ms).  A production
-system would build the BM25 index incrementally at ingest time, or
-use Qdrant's native sparse vector support — but that's an optimization
-you don't need for the case study, and interviewers will appreciate
-that you know the trade-off.
-"""
 from __future__ import annotations
 
 import re
