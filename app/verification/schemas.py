@@ -9,10 +9,19 @@ class CitationVerdict(BaseModel):
     claim: str
     supported: bool
     reasoning: str = Field(description="One sentence explaining the verdict.")
-    method: str = Field(description="'id_check', 'embedding_prefilter', or 'llm_judge' -- which stage produced this verdict.")
+    method: str = Field(description="'id_check', 'embedding_prefilter', or 'llm_judge_batched'.")
 
 
 class _LLMJudgeVerdict(BaseModel):
-    """What we actually ask the LLM for -- chunk_id/claim are already known, no need to have the model echo them back."""
     supported: bool
     reasoning: str
+
+
+class _BatchJudgeItem(BaseModel):
+    index: int
+    supported: bool
+    reasoning: str
+
+
+class _BatchJudgeResponse(BaseModel):
+    verdicts: list[_BatchJudgeItem]

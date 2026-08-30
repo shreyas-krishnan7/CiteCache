@@ -28,10 +28,6 @@ class Chunk:
 
 
 def _split_by_headings(markdown_text: str) -> list[tuple[str, str]]:
-    """
-    Splits markdown into (heading, body) pairs on '#'-style headings.
-    Content before the first heading is kept under heading '' (intro).
-    """
     lines = markdown_text.splitlines()
     sections: list[tuple[str, list[str]]] = []
     current_heading = ""
@@ -53,7 +49,6 @@ def _split_by_headings(markdown_text: str) -> list[tuple[str, str]]:
 
 
 def _fixed_size_split(text: str, size_tokens: int, overlap_tokens: int) -> list[str]:
-    """Token-aware fixed-size splitter with overlap."""
     tokens = _ENCODER.encode(text)
     if len(tokens) <= size_tokens:
         return [text]
@@ -77,10 +72,6 @@ def chunk_document(
     max_chunk_tokens: int = 300,
     overlap_tokens: int = 50,
 ) -> list[Chunk]:
-    """
-    Recursive heading-based chunking with a fixed-size overlap fallback.
-    Returns a flat list of Chunk objects ready to embed and upsert.
-    """
     sections = _split_by_headings(markdown_text)
     chunks: list[Chunk] = []
     idx = 0

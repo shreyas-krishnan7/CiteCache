@@ -11,11 +11,6 @@ from app.ingestion.vector_store import scroll_all_points
 
 
 def _tokenize(text: str) -> list[str]:
-    """
-    Lowercased whitespace + punctuation split.
-    Good enough for BM25 on English support docs — deliberately kept
-    simple so there's nothing opaque to explain in an interview.
-    """
     return re.findall(r"[a-z0-9]+", text.lower())
 
 
@@ -28,10 +23,6 @@ class ScoredChunk:
 
 
 class BM25Index:
-    """
-    Wraps rank_bm25.BM25Okapi and keeps a parallel list of point
-    IDs + payloads so results can be traced back to Qdrant points.
-    """
 
     def __init__(self, corpus_tokens: list[list[str]], point_ids: list[str], payloads: list[dict]):
         self._bm25 = BM25Okapi(corpus_tokens)
@@ -61,10 +52,6 @@ class BM25Index:
 
 
 def build_bm25_index(client: QdrantClient, collection: str) -> BM25Index:
-    """
-    Scrolls every point from the given Qdrant collection and builds
-    a BM25 index from the 'text' field in each point's payload.
-    """
     points = scroll_all_points(client, collection)
     if not points:
         raise RuntimeError(

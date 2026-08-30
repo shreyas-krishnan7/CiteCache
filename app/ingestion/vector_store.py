@@ -11,13 +11,6 @@ from app.config import settings
 
 @lru_cache(maxsize=1)
 def get_client() -> QdrantClient:
-    """
-    Returns a singleton Qdrant client.
-
-    Embedded mode stores data in a local directory (no server needed).
-    Server mode connects to a running Qdrant instance.  The mode is
-    selected via the QDRANT_MODE environment variable.
-    """
     if settings.qdrant_mode == "embedded":
         return QdrantClient(path=settings.qdrant_data_path)
     return QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
@@ -53,41 +46,55 @@ def upsert_chunks(client: QdrantClient, collection: str, chunks, embeddings: lis
     client.upsert(collection_name=collection, points=points)
 
 
-def search_vectors(
-    client: QdrantClient,
-    collection: str,
-    query_vector: list[float],
-    limit: int = 5,
-):
+def search_vectors(client: QdrantClient, collection: str, query_vector: list[float], limit: int = 5):
     """Dense vector search — returns scored points."""
-    return client.query_points(
-        collection_name=collection,
-        query=query_vector,
-        limit=limit,
-    ).points
+    return client.query_points(collection_name=collection, query=query_vector, limit=limit).points
 
 
 def scroll_all_points(client: QdrantClient, collection: str):
-    """
-    Retrieve every point from a collection using scroll pagination.
-
-    This is used by the BM25 index builder to read all chunk texts
-    without knowing their IDs upfront. For a demo corpus of ~33
-    chunks this is perfectly fine; a production system would build
-    the BM25 index at ingest time instead.
-    """
     all_points = []
     offset = None
     while True:
         results, next_offset = client.scroll(
-            collection_name=collection,
-            limit=100,
-            offset=offset,
-            with_vectors=False,
-            with_payload=True,
+            collection_name=collection, limit=100, offset=offset, with_vectors=False, with_payload=True,
         )
         all_points.extend(results)
         if next_offset is None:
             break
         offset = next_offset
     return all_points
+
+
+def clear_collection(client: QdrantClient, collection: str) -> int:
+    """
+    Removes every point from a collection, WITHOUT dropping the
+    collection itself. Returns the number of points deleted.
+
+    Deliberately point-level, not delete_collection(): on Windows,
+    embedded (on-disk) Qdrant's delete_collection() can silently fail
+    to release its file handles, leaving the folder (and its stale
+    data) intact even though no exception is raised. The next
+    ensure_collection() call then reopens that same stale folder,
+    and new data gets upserted ON TOP of the old data instead of
+    replacing it -- this is exactly what caused the doc collection to
+    balloon from 33 to 135 chunks across repeated `ingest --rebuild`
+    runs. Deleting points individually never touches the collection's
+    folder structure, so it doesn't hit that failure mode.
+    """
+    existing = [c.name for c in client.get_collections().collections]
+    if collection not in existing:
+        return 0
+
+    point_ids = []
+    offset = None
+    while True:
+        points, offset = client.scroll(
+            collection_name=collection, limit=256, offset=offset, with_payload=False, with_vectors=False,
+        )
+        point_ids.extend(p.id for p in points)
+        if offset is None:
+            break
+
+    if point_ids:
+        client.delete(collection_name=collection, points_selector=point_ids)
+    return len(point_ids)

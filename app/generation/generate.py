@@ -8,10 +8,7 @@ from app.generation.schemas import GeneratedAnswer
 
 
 def generate_answer(query: str, chunks: list) -> GeneratedAnswer:
-    """
-    chunks: list of RetrievedChunk from hybrid_retrieve() (or
-    dense_only_retrieve() as a degraded fallback).
-    """
+    
     if not chunks:
         return GeneratedAnswer(
             answer="I don't have any relevant information to answer that question.",

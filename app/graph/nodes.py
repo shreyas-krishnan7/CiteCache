@@ -1,4 +1,7 @@
-
+"""
+Graph nodes. Thin wrappers around plain, independently-tested
+functions -- no business logic lives here.
+"""
 from __future__ import annotations
 
 import time
@@ -6,6 +9,7 @@ import time
 from app.config import settings
 from app.cache.semantic_cache import cache_lookup, cache_write
 from app.retrieval.hybrid import hybrid_retrieve
+from app.retrieval.rerank import rerank
 from app.generation.generate import generate_answer
 from app.verification.verify_citations import verify_citations
 from app.verification.confidence import score_confidence as _score_confidence
@@ -19,7 +23,6 @@ def cache_lookup_node(state: GraphState) -> dict:
 
 
 def route_after_cache_lookup(state: GraphState) -> str:
-    """Conditional edge: cache hit -> serve_cached, miss -> continue the pipeline."""
     return "serve_cached" if state["cache_result"].is_hit else "hybrid_retrieve"
 
 
@@ -34,10 +37,23 @@ def serve_cached_node(state: GraphState) -> dict:
 
 
 def hybrid_retrieve_node(state: GraphState) -> dict:
+    # When reranking is enabled, pull a LARGER candidate pool
+    # (rerank_candidate_pool_size) instead of the small final count --
+    # this is what gives the actually-relevant chunk a real chance to
+    # survive into context even when a topically-similar distractor
+    # also ranks highly on dense/BM25/RRF alone. The rerank node then
+    # narrows this pool back down using cross-encoder scores.
+    pool_size = settings.rerank_candidate_pool_size if settings.rerank_enabled else settings.final_top_k
     chunks = hybrid_retrieve(
-        state["query"], state["client"], state["collection"], state["bm25_index"]
+        state["query"], state["client"], state["collection"], state["bm25_index"],
+        top_k=pool_size,
     )
     return {"chunks": chunks}
+
+
+def rerank_node(state: GraphState) -> dict:
+    reranked = rerank(state["query"], state["chunks"])
+    return {"chunks": reranked}
 
 
 def generate_node(state: GraphState) -> dict:
@@ -66,40 +82,21 @@ def score_confidence_node(state: GraphState) -> dict:
 
 
 def cache_write_node(state: GraphState) -> dict:
-    """
-    The confidence gate lives here, not inside cache_write() itself --
-    cache_write() stays a dumb, testable key-value-by-similarity store
-    (per its own docstring from phase 2); the decision of WHEN to call
-    it is orchestration logic, which belongs in the graph.
-    """
     score = state["confidence"]
     if score.confidence >= settings.cache_write_confidence_threshold:
         cache_write(
-            query=state["query"],
-            answer=state["final_answer"],
-            client=state["client"],
-            confidence=score.confidence,
-            source_chunks=state["final_citations"],
+            query=state["query"], answer=state["final_answer"], client=state["client"],
+            confidence=score.confidence, source_chunks=state["final_citations"],
         )
         return {"cached": True}
     return {"cached": False}
 
 
 def log_metrics_node(state: GraphState) -> dict:
-    """
-    Final node on both branches (serve_cached and cache_write both
-    lead here before END). Times the whole run using start_time set
-    by the caller at invoke(), and logs one line to the metrics JSONL
-    -- this is what scripts/simulate_traffic.py reads back to compute
-    cache hit rate and latency reduction.
-    """
     start = state.get("start_time")
     latency_ms = (time.perf_counter() - start) * 1000 if start is not None else None
     log_event(
-        query=state["query"],
-        source=state["source"],
-        confidence=state.get("final_confidence"),
-        latency_ms=latency_ms,
-        cached_this_run=state.get("cached"),  # True/False on generated branch, None on cache-hit branch
+        query=state["query"], source=state["source"], confidence=state.get("final_confidence"),
+        latency_ms=latency_ms, cached_this_run=state.get("cached"),
     )
     return {"logged": True}

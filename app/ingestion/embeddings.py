@@ -8,8 +8,6 @@ from app.config import settings
 
 @lru_cache(maxsize=1)
 def _local_model():
-    # Imported lazily so phase-1 code that doesn't touch embeddings
-    # (e.g. chunking tests) doesn't pay the import cost.
     from sentence_transformers import SentenceTransformer
     return SentenceTransformer(settings.local_embedding_model)
 

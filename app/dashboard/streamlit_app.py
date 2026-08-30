@@ -20,15 +20,38 @@ with st.sidebar:
         st.error("Can't reach the API. Start it first:\n\n`uvicorn app.api.main:app --reload`")
         st.stop()
 
+    st.divider()
+    if st.button("🗑️ Reset all documents & cache", use_container_width=True):
+        try:
+            r = requests.post(f"{API_BASE}/reset", timeout=30)
+            r.raise_for_status()
+            data = r.json()
+            st.success(
+                f"Cleared {data['doc_chunks_deleted']} chunk(s) and "
+                f"{data['cache_entries_deleted']} cache entry(ies)."
+            )
+            st.rerun()
+        except requests.exceptions.RequestException as e:
+            st.error(f"Reset failed: {e}")
+
 tab_upload, tab_ask = st.tabs(["📤 Upload Documents", "💬 Ask a Question"])
 
 with tab_upload:
     st.subheader("Upload support documents")
-    st.caption("Plain text or markdown files. Each is chunked, embedded, and indexed immediately.")
-    uploaded_files = st.file_uploader("Choose files", accept_multiple_files=True, type=["md", "txt"])
+    st.caption("Markdown, plain text, PDF, or Word (.docx) files. Each is chunked, embedded, and indexed immediately.")
+    uploaded_files = st.file_uploader("Choose files", accept_multiple_files=True, type=["md", "txt", "pdf", "docx"])
 
     if st.button("Index uploaded documents", disabled=not uploaded_files):
-        files_payload = [("files", (f.name, f.getvalue(), "text/markdown")) for f in uploaded_files]
+        _CONTENT_TYPES = {
+            "md": "text/markdown",
+            "txt": "text/plain",
+            "pdf": "application/pdf",
+            "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        }
+        files_payload = [
+            ("files", (f.name, f.getvalue(), _CONTENT_TYPES.get(f.name.rsplit(".", 1)[-1].lower(), "application/octet-stream")))
+            for f in uploaded_files
+        ]
         with st.spinner("Chunking, embedding, and indexing..."):
             try:
                 resp = requests.post(f"{API_BASE}/upload", files=files_payload, timeout=120)

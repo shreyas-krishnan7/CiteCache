@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.ingestion.chunking import chunk_document
 from app.ingestion.embeddings import embed_texts
-from app.ingestion.vector_store import get_client, ensure_collection, upsert_chunks, scroll_all_points
+from app.ingestion.extractors import extract_text
+from app.ingestion.vector_store import get_client, ensure_collection, upsert_chunks, scroll_all_points, clear_collection
 from app.retrieval.bm25_index import build_bm25_index, BM25Index
 from app.graph.build_graph import build_graph
 from app.api.schemas import UploadResponse, UploadResult, AskRequest, AskResponse, CitationOut
@@ -19,7 +20,7 @@ app = FastAPI(title="CiteCache API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # demo-scale; tighten before any real deployment
+    allow_origins=["*"],  
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -29,8 +30,7 @@ _graph = build_graph()
 _bm25_lock = threading.Lock()
 _bm25_index: BM25Index | None = None
 
-# Mirrors ingest.py's DOC_TYPE_BY_FILENAME_HINT -- kept self-contained
-# here rather than importing a CLI script's internals into the API.
+
 _DOC_TYPE_HINTS = {
     "password": "account_security", "sso": "account_security", "two_factor": "account_security",
     "refund": "billing", "billing": "billing", "subscription": "billing",
@@ -53,15 +53,36 @@ def _rebuild_bm25_index() -> None:
         try:
             _bm25_index = build_bm25_index(_client, settings.doc_collection)
         except RuntimeError:
-            # No points yet -- fresh collection, nothing uploaded/ingested.
-            # Leave _bm25_index as None; /ask returns a clear 400 if hit
-            # before anything has been indexed.
             _bm25_index = None
 
 
 @app.on_event("startup")
 def _on_startup() -> None:
+    if settings.clear_data_on_startup:
+        doc_deleted = clear_collection(_client, settings.doc_collection)
+        cache_deleted = clear_collection(_client, settings.cache_collection)
+        print(f"[startup] CLEAR_DATA_ON_STARTUP=true -- cleared {doc_deleted} doc chunk(s) "
+              f"and {cache_deleted} cache entry(ies). Set CLEAR_DATA_ON_STARTUP=false in .env "
+              f"to persist data across restarts instead.")
     _rebuild_bm25_index()
+
+
+@app.post("/reset")
+def reset_all() -> dict:
+    """
+    Manual reset without restarting the server -- clears both the
+    document collection and the semantic cache, and rebuilds (empty)
+    BM25 index state. Useful when CLEAR_DATA_ON_STARTUP=false, or when
+    you just want to start over without killing uvicorn.
+    """
+    doc_deleted = clear_collection(_client, settings.doc_collection)
+    cache_deleted = clear_collection(_client, settings.cache_collection)
+    _rebuild_bm25_index()
+    return {
+        "status": "ok",
+        "doc_chunks_deleted": doc_deleted,
+        "cache_entries_deleted": cache_deleted,
+    }
 
 
 @app.post("/upload", response_model=UploadResponse)
@@ -75,12 +96,9 @@ async def upload_documents(files: list[UploadFile] = File(...)) -> UploadRespons
     for file in files:
         raw = await file.read()
         try:
-            text = raw.decode("utf-8")
-        except UnicodeDecodeError:
-            raise HTTPException(
-                status_code=400,
-                detail=f"{file.filename}: only UTF-8 text/markdown files are supported.",
-            )
+            text = extract_text(file.filename or "uploaded", raw)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
 
         doc_type = _guess_doc_type(file.filename or "uploaded")
         chunks = chunk_document(

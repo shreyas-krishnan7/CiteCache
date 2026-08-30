@@ -1,40 +1,24 @@
-
 from __future__ import annotations
-
 from typing import Any, TypedDict
 
 
 class GraphState(TypedDict, total=False):
-    # --- input ---
     query: str
-    client: Any          # QdrantClient
-    bm25_index: Any       # BM25Index
+    client: Any
+    bm25_index: Any
     collection: str
-    start_time: float      # time.perf_counter() at invoke -- set by the caller, read by log_metrics
+    start_time: float
 
-    # --- cache_lookup ---
-    cache_result: Any      # CacheLookupResult
-
-    # --- hybrid_retrieve ---
+    cache_result: Any
     chunks: list
-
-    # --- generate ---
-    generated: Any          # GeneratedAnswer
-
-    # --- verify_citations ---
+    generated: Any
     citation_verdicts: list
+    confidence: Any
 
-    # --- score_confidence ---
-    confidence: Any          # ConfidenceScore
-
-    # --- final output (written by either serve_cached or score_confidence) ---
     final_answer: str
     final_citations: list
     final_confidence: float
-    source: str               # "cache" or "generated"
+    source: str
 
-    # --- cache_write ---
     cached: bool
-
-    # --- log_metrics ---
     logged: bool

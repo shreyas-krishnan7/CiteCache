@@ -1,27 +1,4 @@
-"""
-The `verify_citations` node.
 
-Two stages, run per-citation (not batched):
-
-  Stage A -- embedding pre-filter (no LLM call): cosine similarity
-  between the claim text and the cited chunk's text. Below
-  citation_prefilter_threshold, the citation is rejected outright as
-  an obvious miscite -- this catches the cheap case (wrong chunk
-  entirely) without spending an LLM call on it.
-
-  Stage B -- LLM-as-judge, for everything that passes stage A: does
-  the source text actually entail the claim? This is what a
-  similarity score alone can't tell you -- two sentences can be
-  topically related (high cosine similarity) while one directly
-  contradicts or doesn't actually support the other.
-
-Why per-citation, not one LLM call for the whole answer's citations:
-batching lets a weak citation ride on the coattails of strong ones in
-the same response -- the model tends to give an overall "looks fine"
-verdict rather than scrutinizing each claim independently. One call
-per citation costs more but is the only way to get an independent
-judgment on each one.
-"""
 from __future__ import annotations
 
 import math
@@ -30,17 +7,25 @@ from app.config import settings
 from app.generation.llm_client import call_structured
 from app.generation.schemas import Citation
 from app.ingestion.embeddings import embed_text
-from app.verification.schemas import CitationVerdict, _LLMJudgeVerdict
+from app.verification.schemas import CitationVerdict, _LLMJudgeVerdict, _BatchJudgeResponse
 
-_JUDGE_SYSTEM_PROMPT = """You are a strict fact-checker. Given a SOURCE TEXT \
-and a CLAIM, decide whether the source text actually supports the claim.
+_BATCH_JUDGE_SYSTEM_PROMPT = """You are a strict fact-checker. You will be given a \
+numbered list of CLAIM / SOURCE TEXT pairs. For each pair, decide whether the \
+source text actually supports the claim.
 
-Answer strictly based on what the source text states -- not on whether the \
-claim seems reasonable or true in general. If the source text is silent on \
-part of the claim, or only loosely related, mark it as NOT supported.
+Evaluate each pair completely independently -- your judgment on one pair must \
+NOT be influenced by any other pair in the list. Answer strictly based on what \
+each source text states, not on whether the claim seems reasonable in general. \
+If a source text is silent on part of a claim, or only loosely related, mark \
+that pair as NOT supported.
 
 Respond as JSON matching this schema:
-{"supported": <true or false>, "reasoning": "<one sentence>"}"""
+{
+  "verdicts": [
+    {"index": <int, matching the pair number below>, "supported": <true or false>, "reasoning": "<one sentence>"}
+  ]
+}
+There must be exactly one verdict per pair, each with the correct index."""
 
 
 def _cosine_similarity(a: list[float], b: list[float]) -> float:
@@ -52,36 +37,67 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
     return dot / (norm_a * norm_b)
 
 
-def _llm_judge(claim: str, source_text: str) -> _LLMJudgeVerdict:
-    user_prompt = f"SOURCE TEXT: {source_text}\n\nCLAIM: {claim}"
-    return call_structured(
-        system_prompt=_JUDGE_SYSTEM_PROMPT,
+def _batch_llm_judge(pairs: list[tuple[str, str]]) -> list[_LLMJudgeVerdict]:
+    """
+    pairs: list of (claim, source_text). Returns verdicts in the SAME
+    order as pairs -- callers zip() the result back against their own
+    position list, so order must be preserved even if the model
+    returns indices out of order (handled via a dict lookup, not by
+    trusting response order directly).
+    """
+    if not pairs:
+        return []
+
+    lines = [f"[{i}]\nSOURCE TEXT: {text}\nCLAIM: {claim}" for i, (claim, text) in enumerate(pairs)]
+    user_prompt = "\n\n".join(lines)
+
+    # Token budget scales with batch size -- a single citation and a
+    # ten-citation answer both need to fit their full set of verdicts.
+    max_tokens = settings.verification_max_tokens * max(1, len(pairs))
+
+    response: _BatchJudgeResponse = call_structured(
+        system_prompt=_BATCH_JUDGE_SYSTEM_PROMPT,
         user_prompt=user_prompt,
-        schema=_LLMJudgeVerdict,
-        max_tokens=settings.verification_max_tokens,
+        schema=_BatchJudgeResponse,
+        max_tokens=max_tokens,
     )
+
+    verdict_by_index = {v.index: v for v in response.verdicts}
+    results = []
+    for i in range(len(pairs)):
+        v = verdict_by_index.get(i)
+        if v is None:
+            # Model returned fewer verdicts than pairs, or misnumbered one.
+            # Fail closed (unsupported) rather than silently misaligning
+            # verdicts to the wrong citations.
+            results.append(_LLMJudgeVerdict(
+                supported=False,
+                reasoning="Batch verification response did not include a verdict for this citation.",
+            ))
+        else:
+            results.append(_LLMJudgeVerdict(supported=v.supported, reasoning=v.reasoning))
+    return results
 
 
 def verify_citations(citations: list[Citation], chunks_by_id: dict) -> list[CitationVerdict]:
     """
     chunks_by_id: {chunk_id: RetrievedChunk}, built by the caller from
-    the same chunks passed to generate_answer(). Citations referencing
-    a chunk_id not in this dict have already been filtered out by
-    generate_answer()'s defensive check, but we handle it defensively
-    here too in case this is called independently.
+    the same chunks passed to generate_answer().
     """
-    verdicts: list[CitationVerdict] = []
+    verdicts: list[CitationVerdict | None] = [None] * len(citations)
+    pending_pairs: list[tuple[str, str]] = []          # (claim, source_text) for stage B
+    pending_positions: list[tuple[int, str, str]] = []  # (position, chunk_id, claim)
 
-    for citation in citations:
+    for pos, citation in enumerate(citations):
         chunk = chunks_by_id.get(citation.chunk_id)
         if chunk is None:
-            verdicts.append(CitationVerdict(
+            verdicts[pos] = CitationVerdict(
                 chunk_id=citation.chunk_id,
                 claim=citation.claim,
                 supported=False,
                 reasoning="Cited chunk_id was not among the retrieved chunks.",
                 method="id_check",
-            ))
+            )
             continue
 
         claim_vec = embed_text(citation.claim)
@@ -89,26 +105,31 @@ def verify_citations(citations: list[Citation], chunks_by_id: dict) -> list[Cita
         similarity = _cosine_similarity(claim_vec, chunk_vec)
 
         if similarity < settings.citation_prefilter_threshold:
-            verdicts.append(CitationVerdict(
+            verdicts[pos] = CitationVerdict(
                 chunk_id=citation.chunk_id,
                 claim=citation.claim,
                 supported=False,
                 reasoning=f"Embedding similarity ({similarity:.2f}) below prefilter threshold "
                           f"({settings.citation_prefilter_threshold}) -- claim doesn't appear related to this chunk.",
                 method="embedding_prefilter",
-            ))
+            )
             continue
 
-        judged = _llm_judge(citation.claim, chunk.text)
-        verdicts.append(CitationVerdict(
-            chunk_id=citation.chunk_id,
-            claim=citation.claim,
-            supported=judged.supported,
-            reasoning=judged.reasoning,
-            method="llm_judge",
-        ))
+        pending_pairs.append((citation.claim, chunk.text))
+        pending_positions.append((pos, citation.chunk_id, citation.claim))
 
-    return verdicts
+    if pending_pairs:
+        judged = _batch_llm_judge(pending_pairs)
+        for (pos, chunk_id, claim), result in zip(pending_positions, judged):
+            verdicts[pos] = CitationVerdict(
+                chunk_id=chunk_id,
+                claim=claim,
+                supported=result.supported,
+                reasoning=result.reasoning,
+                method="llm_judge_batched",
+            )
+
+    return verdicts  # type: ignore[return-value]  -- every position is filled by this point
 
 
 def citation_support_rate(verdicts: list[CitationVerdict]) -> float:

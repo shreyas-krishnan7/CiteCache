@@ -1,8 +1,5 @@
 """
 The `score_confidence` node.
-
-Combines three independently-defensible signals into one number:
-
   retrieval_score        -- the top result's dense cosine similarity
                              (already 0..1, clamped). NOT the RRF
                              score: RRF has no natural upper bound
@@ -18,10 +15,6 @@ Combines three independently-defensible signals into one number:
 
 confidence = 0.4*retrieval_score + 0.4*citation_support_rate + 0.2*completeness
 
-This score is what gates cache_write in a later phase
-(cache_write_confidence_threshold, already in config from phase 2) --
-low-confidence answers are still served to the user, but never
-written to the cache, so a shaky answer can't poison future lookups.
 """
 from __future__ import annotations
 

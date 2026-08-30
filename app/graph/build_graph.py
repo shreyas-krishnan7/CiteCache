@@ -1,4 +1,20 @@
+"""
+The CiteCache LangGraph state machine.
 
+    cache_lookup
+      |
+      +-- HIT --> serve_cached ----------------------------+
+      |                                                     |
+      +-- MISS --> hybrid_retrieve -> rerank -> generate    |
+                    -> verify_citations -> score_confidence |
+                    -> cache_write --------------------------> log_metrics -> END
+
+`rerank` is new: dense+BM25+RRF (hybrid_retrieve) now pulls a larger
+candidate pool, and this node narrows it back down using cross-encoder
+scores -- see app/retrieval/rerank.py for why this was added (phase 6
+eval measured real cases where RRF alone buried the correct chunk
+below the old top-5 cutoff).
+"""
 from __future__ import annotations
 
 from langgraph.graph import StateGraph, END
@@ -9,6 +25,7 @@ from app.graph.nodes import (
     route_after_cache_lookup,
     serve_cached_node,
     hybrid_retrieve_node,
+    rerank_node,
     generate_node,
     verify_citations_node,
     score_confidence_node,
@@ -23,6 +40,7 @@ def build_graph():
     graph.add_node("cache_lookup", cache_lookup_node)
     graph.add_node("serve_cached", serve_cached_node)
     graph.add_node("hybrid_retrieve", hybrid_retrieve_node)
+    graph.add_node("rerank", rerank_node)
     graph.add_node("generate", generate_node)
     graph.add_node("verify_citations", verify_citations_node)
     graph.add_node("score_confidence", score_confidence_node)
@@ -34,13 +52,11 @@ def build_graph():
     graph.add_conditional_edges(
         "cache_lookup",
         route_after_cache_lookup,
-        {
-            "serve_cached": "serve_cached",
-            "hybrid_retrieve": "hybrid_retrieve",
-        },
+        {"serve_cached": "serve_cached", "hybrid_retrieve": "hybrid_retrieve"},
     )
 
-    graph.add_edge("hybrid_retrieve", "generate")
+    graph.add_edge("hybrid_retrieve", "rerank")
+    graph.add_edge("rerank", "generate")
     graph.add_edge("generate", "verify_citations")
     graph.add_edge("verify_citations", "score_confidence")
     graph.add_edge("score_confidence", "cache_write")

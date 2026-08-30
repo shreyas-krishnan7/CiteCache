@@ -95,11 +95,7 @@ def cache_write(
     confidence: float = 1.0,
     source_chunks: list[str] | None = None,
 ) -> str:
-    """
-    Write a verified answer into the semantic cache.
-
-    Returns the point ID of the cached entry.
-    """
+    
     query_vector = embed_text(query)
     ensure_collection(client, settings.cache_collection, len(query_vector))
 
@@ -125,18 +121,6 @@ def cache_write(
 
 
 def cache_clear(client: QdrantClient) -> None:
-    """
-    Removes every point from the cache collection, rather than
-    dropping and recreating the collection itself.
-
-    Why: on Windows, embedded (on-disk) Qdrant's delete_collection()
-    can fail to release its file handles on the collection's storage
-    folder. No exception is raised, but the folder isn't actually
-    removed -- the next ensure_collection() call finds it still there
-    and reopens it with the old data intact. Deleting points
-    individually never touches the collection's folder structure, so
-    it doesn't hit that failure mode.
-    """
     existing = [c.name for c in client.get_collections().collections]
     if settings.cache_collection not in existing:
         return

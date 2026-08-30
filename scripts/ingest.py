@@ -9,10 +9,9 @@ from datetime import datetime, timezone
 from app.config import settings
 from app.ingestion.chunking import chunk_document
 from app.ingestion.embeddings import embed_texts
-from app.ingestion.vector_store import ensure_collection, get_client, upsert_chunks
+from app.ingestion.extractors import extract_text, SUPPORTED_EXTENSIONS
+from app.ingestion.vector_store import ensure_collection, get_client, upsert_chunks, clear_collection
 
-# Lightweight filename -> doc_type guesser. Good enough for the demo
-# corpus; a real system would read this from front-matter instead.
 DOC_TYPE_BY_FILENAME_HINT = {
     "password": "account_security",
     "sso": "account_security",
@@ -36,18 +35,33 @@ def _guess_doc_type(filename: str) -> str:
     return "general"
 
 
+def _find_source_files(source_path: pathlib.Path) -> list[pathlib.Path]:
+    files = []
+    for ext in sorted(SUPPORTED_EXTENSIONS):
+        files.extend(source_path.glob(f"*.{ext}"))
+    return sorted(files)
+
+
 def ingest(source_dir: str, rebuild: bool) -> None:
     client = get_client()
     source_path = pathlib.Path(source_dir)
-    md_files = sorted(source_path.glob("*.md"))
+    source_files = _find_source_files(source_path)
 
-    if not md_files:
-        raise SystemExit(f"No markdown files found under {source_dir}")
+    if not source_files:
+        raise SystemExit(
+            f"No supported files found under {source_dir} "
+            f"(looking for: {', '.join(sorted(SUPPORTED_EXTENSIONS))})"
+        )
 
     all_chunks = []
-    print(f"Chunking {len(md_files)} documents...")
-    for path in md_files:
-        text = path.read_text(encoding="utf-8")
+    print(f"Chunking {len(source_files)} documents...")
+    for path in source_files:
+        try:
+            text = extract_text(path.name, path.read_bytes())
+        except ValueError as e:
+            print(f"  SKIPPED {path.name}: {e}")
+            continue
+
         doc_type = _guess_doc_type(path.stem)
         chunks = chunk_document(
             markdown_text=text,
@@ -60,16 +74,16 @@ def ingest(source_dir: str, rebuild: bool) -> None:
         all_chunks.extend(chunks)
         print(f"  {path.name}: {len(chunks)} chunks ({doc_type})")
 
+    if not all_chunks:
+        raise SystemExit("No chunks produced -- every file was skipped or empty.")
+
     print(f"\nEmbedding {len(all_chunks)} chunks (provider={settings.embedding_provider})...")
     embeddings = embed_texts([c.text for c in all_chunks])
     vector_size = len(embeddings[0])
 
     if rebuild:
-        try:
-            client.delete_collection(settings.doc_collection)
-            print(f"Dropped existing collection '{settings.doc_collection}'.")
-        except Exception:
-            pass
+        deleted = clear_collection(client, settings.doc_collection)
+        print(f"Cleared {deleted} existing point(s) from '{settings.doc_collection}' before re-ingesting.")
 
     ensure_collection(client, settings.doc_collection, vector_size)
     upsert_chunks(client, settings.doc_collection, all_chunks, embeddings)
@@ -78,27 +92,25 @@ def ingest(source_dir: str, rebuild: bool) -> None:
         "indexed_at": datetime.now(timezone.utc).isoformat(),
         "embedding_provider": settings.embedding_provider,
         "embedding_model": (
-            settings.openai_embedding_model
-            if settings.embedding_provider == "openai"
-            else settings.local_embedding_model
+            settings.openai_embedding_model if settings.embedding_provider == "openai" else settings.local_embedding_model
         ),
         "vector_size": vector_size,
         "total_chunks": len(all_chunks),
-        "total_documents": len(md_files),
+        "total_documents": len(source_files),
         "chunk_size_tokens": settings.chunk_size_tokens,
         "chunk_overlap_tokens": settings.chunk_overlap_tokens,
-        "documents": [p.name for p in md_files],
+        "documents": [p.name for p in source_files],
     }
     manifest_path = pathlib.Path("data") / "index_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2))
 
-    print(f"\nIndexed {len(all_chunks)} chunks from {len(md_files)} documents into '{settings.doc_collection}'.")
+    print(f"\nIndexed {len(all_chunks)} chunks from {len(source_files)} documents into '{settings.doc_collection}'.")
     print(f"Manifest written to {manifest_path}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Ingest markdown docs into the CiteCache document collection.")
-    parser.add_argument("--source", default="data/docs", help="Directory of .md files to ingest.")
-    parser.add_argument("--rebuild", action="store_true", help="Drop and recreate the collection before ingesting.")
+    parser = argparse.ArgumentParser(description="Ingest documents into the CiteCache document collection.")
+    parser.add_argument("--source", default="data/docs", help="Directory of files to ingest.")
+    parser.add_argument("--rebuild", action="store_true", help="Clear existing points before ingesting.")
     args = parser.parse_args()
     ingest(args.source, args.rebuild)
