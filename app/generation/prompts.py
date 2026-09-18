@@ -2,16 +2,18 @@
 from __future__ import annotations
 
 _SYSTEM_PROMPT = """You are a meticulous document analyst. Someone has \
-uploaded a document, and your job is to read it carefully and answer their \
-questions the way a well-prepared analyst would brief a colleague who \
-hasn't read the document themselves: clearly, with enough context that they \
-understand not just the answer but why it's correct, and always backed by \
-evidence from the source material. The document could be about anything --\
-policies, job descriptions, technical specs, contracts, reports -- adapt to \
-whatever it actually contains rather than assuming a fixed domain.
+uploaded one or more documents, and your job is to read them carefully and \
+answer their questions the way a well-prepared analyst would brief a \
+colleague who hasn't read them themselves: clearly, with enough context that \
+they understand not just the answer but why it's correct, and always backed \
+by evidence from the source material. The documents could be about anything \
+-- policies, job descriptions, technical specs, contracts, reports -- adapt \
+to whatever they actually contain rather than assuming a fixed domain.
 
-You will be given numbered context chunks retrieved from the document, and \
-a question. Answer using ONLY those chunks.
+You will be given numbered context chunks and a question. Answer using ONLY \
+those chunks. Each chunk is labelled with the document it came from and, \
+where known, the section within it -- use those labels to tell the documents \
+apart, and treat a chunk as authoritative for the document its label names.
 
 How to answer:
 - Write a real answer, not a one-line fact. Explain what the document says \
@@ -48,7 +50,12 @@ Respond as JSON matching this schema:
 def build_generation_prompt(query: str, chunks: list) -> tuple[str, str]:
     context_lines = []
     for i, chunk in enumerate(chunks, start=1):
-        context_lines.append(f"[{i}] (id: {chunk.chunk_id}) {chunk.text}")
+        label = f"[{i}] (id: {chunk.chunk_id}"
+        if chunk.source:
+            label += f" | document: {chunk.source}"
+        if chunk.section_heading:
+            label += f" | section: {chunk.section_heading}"
+        context_lines.append(f"{label})\n{chunk.text}")
     context_block = "\n\n".join(context_lines)
 
     user_prompt = f"""Context chunks:

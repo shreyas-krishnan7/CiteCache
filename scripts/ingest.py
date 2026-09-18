@@ -24,6 +24,9 @@ DOC_TYPE_BY_FILENAME_HINT = {
     "data_export": "data",
     "account_deletion": "account_management",
     "team_seat": "account_management",
+    "osh": "occupational_safety",
+    "wages": "wages_and_bonus",
+    "bonded": "bonded_labour",
 }
 
 

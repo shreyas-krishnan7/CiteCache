@@ -54,7 +54,7 @@ with tab_upload:
         ]
         with st.spinner("Chunking, embedding, and indexing..."):
             try:
-                resp = requests.post(f"{API_BASE}/upload", files=files_payload, timeout=120)
+                resp = requests.post(f"{API_BASE}/upload", files=files_payload, timeout=300)
                 resp.raise_for_status()
                 data = resp.json()
                 st.success(f"Indexed {data['total_chunks_indexed']} chunks from {data['files_processed']} file(s).")

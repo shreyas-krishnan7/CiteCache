@@ -1,7 +1,7 @@
 
-from __future__ import annotations
+from __future__ import annotations # It postpones evaluation of type annotations, improving performance and avoiding circular import issues.Type hints ko abhi evaluate mat karo, baad mein dekh lena
 
-import threading
+import threading #Lock ensures only one thread accesses the BM25 index at a time.
 import time
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -20,12 +20,12 @@ app = FastAPI(title="CiteCache API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],   
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-_client = get_client()
+_client = get_client() # initialising the connection to the Qdrant client
 _graph = build_graph()
 _bm25_lock = threading.Lock()
 _bm25_index: BM25Index | None = None
@@ -37,6 +37,7 @@ _DOC_TYPE_HINTS = {
     "api": "developer", "webhook": "developer", "data_export": "data",
     "account_deletion": "account_management", "team_seat": "account_management",
 }
+# future improvment use an llm classifier 
 
 
 def _guess_doc_type(filename: str) -> str:
@@ -60,13 +61,13 @@ def _rebuild_bm25_index() -> None:
 def _on_startup() -> None:
     if settings.clear_data_on_startup:
         doc_deleted = clear_collection(_client, settings.doc_collection)
-        cache_deleted = clear_collection(_client, settings.cache_collection)
+        cache_deleted = clear_collection(_client, settings.cache_collection) # clearing cache as well , because cache deepends on docs - docs change canche also changes . 
         print(f"[startup] CLEAR_DATA_ON_STARTUP=true -- cleared {doc_deleted} doc chunk(s) "
               f"and {cache_deleted} cache entry(ies). Set CLEAR_DATA_ON_STARTUP=false in .env "
               f"to persist data across restarts instead.")
     _rebuild_bm25_index()
 
-
+ 
 @app.post("/reset")
 def reset_all() -> dict:
     """
@@ -85,18 +86,18 @@ def reset_all() -> dict:
     }
 
 
-@app.post("/upload", response_model=UploadResponse)
-async def upload_documents(files: list[UploadFile] = File(...)) -> UploadResponse:
+@app.post("/upload", response_model=UploadResponse) # output shoudl foolw the schema of UploadResponse 
+async def upload_documents(files: list[UploadFile] = File(...)) -> UploadResponse:    # ... - represent file is required 
     if not files:
         raise HTTPException(status_code=400, detail="No files provided.")
 
-    results: list[UploadResult] = []
+    results: list[UploadResult] = [] # empty list of the datype UploadResult definied in the schemas.py file 
     all_chunks = []
 
     for file in files:
         raw = await file.read()
         try:
-            text = extract_text(file.filename or "uploaded", raw)
+            text = extract_text(file.filename or "uploaded", raw) # calling the extract function defined in ingestions-extractors.py
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 

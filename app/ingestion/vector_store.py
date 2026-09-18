@@ -66,21 +66,6 @@ def scroll_all_points(client: QdrantClient, collection: str):
 
 
 def clear_collection(client: QdrantClient, collection: str) -> int:
-    """
-    Removes every point from a collection, WITHOUT dropping the
-    collection itself. Returns the number of points deleted.
-
-    Deliberately point-level, not delete_collection(): on Windows,
-    embedded (on-disk) Qdrant's delete_collection() can silently fail
-    to release its file handles, leaving the folder (and its stale
-    data) intact even though no exception is raised. The next
-    ensure_collection() call then reopens that same stale folder,
-    and new data gets upserted ON TOP of the old data instead of
-    replacing it -- this is exactly what caused the doc collection to
-    balloon from 33 to 135 chunks across repeated `ingest --rebuild`
-    runs. Deleting points individually never touches the collection's
-    folder structure, so it doesn't hit that failure mode.
-    """
     existing = [c.name for c in client.get_collections().collections]
     if collection not in existing:
         return 0

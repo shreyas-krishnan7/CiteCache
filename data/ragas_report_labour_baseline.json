@@ -1,0 +1,303 @@
+{
+  "b01": {
+    "question": "What is the punishment for compelling a person to render bonded labour?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8554767924707183,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67
+  },
+  "b02": {
+    "question": "Who bears the burden of proof when a debt is claimed to be a bonded debt?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8640520747160877,
+    "context_recall": 1.0,
+    "factual_correctness": 0.0
+  },
+  "b03": {
+    "question": "What happened to bonded debts when the Act came into force?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7892401357015933,
+    "context_recall": 0.5,
+    "factual_correctness": 0.53
+  },
+  "b04": {
+    "question": "Can a freed bonded labourer be evicted from their homestead?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9115653730321932,
+    "context_recall": 1.0,
+    "factual_correctness": 0.57
+  },
+  "b05": {
+    "question": "Who chairs a district Vigilance Committee and how many members must belong to the Scheduled Castes or Scheduled Tribes?",
+    "faithfulness": 0.8333333333333334,
+    "response_relevancy": 0.956923249984105,
+    "context_recall": 1.0,
+    "factual_correctness": 0.89
+  },
+  "b06": {
+    "question": "What is the penalty if a creditor accepts payment against a debt that has already been extinguished?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8773143060143994,
+    "context_recall": 1.0,
+    "factual_correctness": 0.77
+  },
+  "b07": {
+    "question": "When is the Bonded Labour System (Abolition) Act deemed to have come into force?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9455846949666161,
+    "context_recall": 0.0,
+    "factual_correctness": 0.29
+  },
+  "b08": {
+    "question": "What is the punishment for abetting an offence under the Bonded Labour System (Abolition) Act?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8998814845028775,
+    "context_recall": 1.0,
+    "factual_correctness": 0.0
+  },
+  "w01": {
+    "question": "What is the overtime rate under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9532497010527399,
+    "context_recall": 1.0,
+    "factual_correctness": 0.25
+  },
+  "w02": {
+    "question": "By when must an employer pay wages to a monthly-paid employee?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8964610798538359,
+    "context_recall": 1.0,
+    "factual_correctness": 0.33
+  },
+  "w03": {
+    "question": "When must wages be paid to an employee who has been dismissed or has resigned?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8292599156672376,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75
+  },
+  "w04": {
+    "question": "What is the maximum total deduction that can be made from an employee's wages in a wage period?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8972284575499274,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5
+  },
+  "w05": {
+    "question": "What limits apply to fines imposed on an employee, and can a 14-year-old be fined?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8236722334702408,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5
+  },
+  "w06": {
+    "question": "What is the minimum bonus payable under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8773534000263847,
+    "context_recall": 1.0,
+    "factual_correctness": 0.55
+  },
+  "w07": {
+    "question": "Within what time must bonus be paid?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8337652664570218,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5
+  },
+  "w08": {
+    "question": "What disqualifies an employee from receiving bonus?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9046892688619071,
+    "context_recall": 1.0,
+    "factual_correctness": 0.0
+  },
+  "w09": {
+    "question": "What is the time limit for filing a claim under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9793074731779189,
+    "context_recall": 0.5,
+    "factual_correctness": 0.22
+  },
+  "w10": {
+    "question": "What is the penalty for an employer who pays an employee less than the amount due, and what happens on a repeat offence?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8878636893542634,
+    "context_recall": 1.0,
+    "factual_correctness": 0.62
+  },
+  "w11": {
+    "question": "How often must minimum wages be reviewed or revised?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9145487107182504,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67
+  },
+  "w12": {
+    "question": "Is house rent allowance included in 'wages' under the Code on Wages?",
+    "faithfulness": 0.875,
+    "response_relevancy": 0.9788479169954893,
+    "context_recall": 1.0,
+    "factual_correctness": 0.77
+  },
+  "w13": {
+    "question": "Can an offence under the Code on Wages be compounded, and at what cost?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9123458947910201,
+    "context_recall": 0.5,
+    "factual_correctness": 0.53
+  },
+  "w14": {
+    "question": "Who is excluded from the definition of 'worker' under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.854963969883165,
+    "context_recall": 0.0,
+    "factual_correctness": 0.0
+  },
+  "o01": {
+    "question": "How many hours a day and days a week can a worker be required to work under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.79879298184691,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5
+  },
+  "o02": {
+    "question": "What overtime rate applies under the OSH Code and is the worker's consent required?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7860275822523765,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8
+  },
+  "o03": {
+    "question": "How much annual leave with wages is a worker entitled to under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7884296606992791,
+    "context_recall": 1.0,
+    "factual_correctness": 0.89
+  },
+  "o04": {
+    "question": "When must an employer appoint a safety officer?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9448027974317569,
+    "context_recall": 0.0,
+    "factual_correctness": 0.53
+  },
+  "o05": {
+    "question": "When is a canteen required, and when is a creche required?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8501545300827885,
+    "context_recall": 0.5,
+    "factual_correctness": 0.17
+  },
+  "o06": {
+    "question": "Can women be employed at night under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.918135335399341,
+    "context_recall": 1.0,
+    "factual_correctness": 0.71
+  },
+  "o07": {
+    "question": "Within how many days must a new establishment apply for registration?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7582298889049389,
+    "context_recall": 1.0,
+    "factual_correctness": 0.55
+  },
+  "o08": {
+    "question": "When do the contract labour provisions of the OSH Code apply?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7616183593261198,
+    "context_recall": 0.0,
+    "factual_correctness": 0.0
+  },
+  "o09": {
+    "question": "What happens if a contractor fails to pay wages to contract labour?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.886285170132619,
+    "context_recall": 1.0,
+    "factual_correctness": 0.89
+  },
+  "o10": {
+    "question": "When do the inter-State migrant worker provisions apply, and what travel benefit do such workers receive?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8884096630902253,
+    "context_recall": 1.0,
+    "factual_correctness": 0.46
+  },
+  "o11": {
+    "question": "Which accidents must be notified under the OSH Code?",
+    "faithfulness": 0.75,
+    "response_relevancy": 0.9478857508866328,
+    "context_recall": 0.5,
+    "factual_correctness": 0.5
+  },
+  "o12": {
+    "question": "What is the general penalty for contravening the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8326462763882659,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5
+  },
+  "o13": {
+    "question": "What is the punishment when a safety contravention results in a worker's death?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7906657377947317,
+    "context_recall": 1.0,
+    "factual_correctness": 0.2
+  },
+  "o14": {
+    "question": "What counts as a 'factory' and what counts as an 'establishment' under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8549176612775559,
+    "context_recall": 0.0,
+    "factual_correctness": 0.27
+  },
+  "o15": {
+    "question": "What rights does an employee have when there is imminent danger at the workplace?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9433527481013698,
+    "context_recall": 0.5,
+    "factual_correctness": 0.53
+  },
+  "o16": {
+    "question": "Is employment of contract labour allowed in an establishment's core activity?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8837257466699837,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8
+  },
+  "x01": {
+    "question": "How does the Bonded Labour Act define 'nominal wages', and how does that relate to minimum wages legislation?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9019424781043872,
+    "context_recall": 0.5,
+    "factual_correctness": 0.5
+  },
+  "x04": {
+    "question": "Does the Bonded Labour System (Abolition) Act cover contract labour and inter-State migrant workers?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9765295213358428,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67
+  },
+  "x05": {
+    "question": "Both Codes make company officers liable for offences. What must be proved against a director?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8179300668444824,
+    "context_recall": NaN,
+    "factual_correctness": NaN
+  },
+  "x02": {
+    "question": "Does the definition of 'contract labour' differ between the Code on Wages and the OSH Code?",
+    "faithfulness": NaN,
+    "response_relevancy": NaN,
+    "context_recall": NaN,
+    "factual_correctness": NaN
+  },
+  "x03": {
+    "question": "Both the Code on Wages and the OSH Code provide for overtime. Do they set the same rate?",
+    "faithfulness": NaN,
+    "response_relevancy": NaN,
+    "context_recall": NaN,
+    "factual_correctness": NaN
+  }
+}

@@ -1,0 +1,10 @@
+# Install these in a SEPARATE virtual environment from your main
+# citecache venv -- ragas needs an older langchain-core than
+# langgraph (your main app's orchestration library) can tolerate.
+# Confirmed by direct testing: installing ragas alongside langgraph
+# in one environment produces an unresolvable pip conflict.
+
+ragas==0.2.15
+langchain-google-genai==2.0.11
+langchain-huggingface==0.1.2
+python-dotenv==1.0.1

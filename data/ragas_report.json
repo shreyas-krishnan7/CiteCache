@@ -1,0 +1,170 @@
+{
+  "q01": {
+    "question": "How do I reset my password?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.999999999999909,
+    "context_recall": 1.0,
+    "factual_correctness": 0.0
+  },
+  "q02": {
+    "question": "What are the password requirements?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8888606818077136,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0
+  },
+  "q03": {
+    "question": "What happens after 5 failed login attempts?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9072562432775682,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8
+  },
+  "q04": {
+    "question": "How does SSO login work for enterprise accounts?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.924341805283377,
+    "context_recall": 1.0,
+    "factual_correctness": 0.62
+  },
+  "q05": {
+    "question": "Can I reset my password if my organization uses SSO?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9852059064310086,
+    "context_recall": 1.0,
+    "factual_correctness": 0.91
+  },
+  "q06": {
+    "question": "How do I enable SSO for my organization?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8409307216096694,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8
+  },
+  "q07": {
+    "question": "How do I set up two-factor authentication?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9745000749948846,
+    "context_recall": 1.0,
+    "factual_correctness": 0.2
+  },
+  "q08": {
+    "question": "How many backup codes do I get for 2FA?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8456031859865103,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5
+  },
+  "q09": {
+    "question": "What happens if I lose access to my authenticator app and have no backup codes?",
+    "faithfulness": 0.6,
+    "response_relevancy": 0.9590500048377265,
+    "context_recall": 1.0,
+    "factual_correctness": 0.86
+  },
+  "q10": {
+    "question": "What is the API rate limit for free tier accounts?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9046222951343509,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8
+  },
+  "q11": {
+    "question": "What happens when I exceed the API rate limit?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9531391932982166,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8
+  },
+  "q12": {
+    "question": "How can I request a higher API rate limit?",
+    "faithfulness": 0.0,
+    "response_relevancy": 0.8512118965065336,
+    "context_recall": 0.0,
+    "factual_correctness": 0.0
+  },
+  "q13": {
+    "question": "What does a 401 error mean?",
+    "faithfulness": 0.5714285714285714,
+    "response_relevancy": null,
+    "context_recall": 0.0,
+    "factual_correctness": 0.0
+  },
+  "q14": {
+    "question": "What should I do if I get a 500 error?",
+    "faithfulness": 0.375,
+    "response_relevancy": 0.9541444683722647,
+    "context_recall": 1.0,
+    "factual_correctness": 0.83
+  },
+  "q15": {
+    "question": "What does a 403 error mean?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9053855003005665,
+    "context_recall": 0.0,
+    "factual_correctness": 0.0
+  },
+  "q16": {
+    "question": "When am I charged for my subscription?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9859614487935615,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75
+  },
+  "q17": {
+    "question": "What happens if my payment fails?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9999999999999364,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0
+  },
+  "q18": {
+    "question": "What happens if I upgrade my plan in the middle of a billing cycle?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9517796707787095,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0
+  },
+  "q19": {
+    "question": "Can I get a refund on my annual plan after 30 days?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9860279605759721,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0
+  },
+  "q20": {
+    "question": "How do I request a refund?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9242059345443092,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0
+  },
+  "q21": {
+    "question": "What is the standard refund window?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7791222003623964,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75
+  },
+  "q22": {
+    "question": "How do I delete my account?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8916467119869868,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67
+  },
+  "q23": {
+    "question": "What happens during the grace period after I delete my account?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.855450199624373,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0
+  },
+  "q24": {
+    "question": "Are my billing records deleted when I delete my account?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9999999999998712,
+    "context_recall": 1.0,
+    "factual_correctness": 0.91
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "q01": {
+    "question": "How do I reset my password?",
+    "answer": "The process for resetting your password depends on your account type:\n\n* For standard accounts, navigate to Settings, select Security, and then choose Reset Password. You will need to enter your account's email address to receive a reset link, which remains valid for 24 hours. If the link expires, you can request a new one using the same screen.\n* If your account is locked due to 5 failed login attempts, you can still request a password reset link during the 15-minute lockout period; using this link will unlock your account immediately.\n* If your organization uses Single Sign-On (SSO), the standard reset flow does not apply because your credentials are managed by your organization's identity provider. In this case, you must contact your IT administrator to reset your credentials directly. If SSO is disabled for your organization, users who previously only logged in via SSO will need to use the \"forgot password\" flow to establish a password for the first time.",
+    "contexts": [
+      "Go to Settings then Security then Reset Password. Enter the email\naddress associated with your account and a reset link will be sent.\nThe link expires 24 hours after it is issued. If it expires, request\na new one from the same screen.",
+      "There is no in-app password reset for SSO accounts, because the\npassword itself is managed entirely by your organization's identity\nprovider, not by us. If you cannot log in, contact your organization's\nIT administrator to reset your credentials in the identity provider\ndirectly. We cannot reset an SSO user's password on our end.",
+      "If your organization has enterprise single sign-on enabled, this\nconsumer password reset flow does not apply to you. See the SSO and\nEnterprise Login document for the correct process \u2014 resetting a\npassword here will not affect your SSO login.",
+      "After 5 failed login attempts, the account is locked for 15 minutes.\nDuring this window, a password reset link can still be requested and\nwill unlock the account immediately once used.",
+      "Disabling SSO reverts all members to standard email and password\nlogin. Members who never had a password set (because they only ever\nlogged in via SSO) will need to use the \"forgot password\" flow once\nto set one, exactly like a new consumer account."
+    ],
+    "ground_truth": "Go to Settings, then Security, then Reset Password. Enter your account email and a reset link will be sent; the link expires 24 hours after it's issued."
+  },
+  "q02": {
+    "question": "What are the password requirements?",
+    "answer": "For accounts that utilize standard email and password authentication, passwords must meet a minimum length of 10 characters. Additionally, each password must contain at least one number and one symbol. To ensure security, the system also enforces a history check, meaning a new password cannot match any of the user's previous five passwords.",
+    "contexts": [
+      "Passwords must be at least 10 characters long and include one number\nand one symbol. Passwords cannot match any of your last 5 passwords.",
+      "Disabling SSO reverts all members to standard email and password\nlogin. Members who never had a password set (because they only ever\nlogged in via SSO) will need to use the \"forgot password\" flow once\nto set one, exactly like a new consumer account.",
+      "Organizations on the Enterprise plan can enable single sign-on (SSO)\nthrough an identity provider such as Okta, Azure AD, or Google\nWorkspace. Once enabled, all members of that organization must log in\nthrough the identity provider's login page \u2014 the standard email and\npassword login screen is disabled for that organization.",
+      "There is no in-app password reset for SSO accounts, because the\npassword itself is managed entirely by your organization's identity\nprovider, not by us. If you cannot log in, contact your organization's\nIT administrator to reset your credentials in the identity provider\ndirectly. We cannot reset an SSO user's password on our end.",
+      "If your organization has enterprise single sign-on enabled, this\nconsumer password reset flow does not apply to you. See the SSO and\nEnterprise Login document for the correct process \u2014 resetting a\npassword here will not affect your SSO login."
+    ],
+    "ground_truth": "Passwords must be at least 10 characters long and include one number and one symbol. A new password cannot match any of the last 5 passwords used."
+  },
+  "q03": {
+    "question": "What happens after 5 failed login attempts?",
+    "answer": "If a user makes 5 failed login attempts, their account is automatically locked for a duration of 15 minutes. However, the user is not completely barred from accessing the account during this lockout period; they can still request a password reset link, and using that link will immediately unlock the account.",
+    "contexts": [
+      "After 5 failed login attempts, the account is locked for 15 minutes.\nDuring this window, a password reset link can still be requested and\nwill unlock the account immediately once used.",
+      "An unexpected error occurred on our end. These are automatically\nlogged and investigated. If it persists for more than a few minutes,\ncheck the status page or contact support with the `X-Request-Id`\nheader value from the failed response.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access.",
+      "Disabling SSO reverts all members to standard email and password\nlogin. Members who never had a password set (because they only ever\nlogged in via SSO) will need to use the \"forgot password\" flow once\nto set one, exactly like a new consumer account.",
+      "The request body failed schema validation. The response includes a\n`details` array listing which fields failed and why."
+    ],
+    "ground_truth": "The account is locked for 15 minutes. A password reset link can still be requested during that window and will unlock the account immediately once used."
+  },
+  "q04": {
+    "question": "How does SSO login work for enterprise accounts?",
+    "answer": "For organizations on the Enterprise plan, SSO login functions by routing all members through an external identity provider, such as Okta, Azure AD, or Google Workspace. Once SSO is enabled, the standard email and password login screen is disabled for the entire organization, requiring all members to authenticate via the identity provider's login page instead. Additionally, organizations using enterprise SSO must manage two-factor authentication directly through their chosen identity provider's settings rather than the platform's in-app flow. Furthermore, standard consumer password reset processes do not apply to these accounts; users must follow the specific SSO and Enterprise Login procedures, as resetting a password through the consumer flow will not impact their SSO credentials.",
+    "contexts": [
+      "Organizations on the Enterprise plan can enable single sign-on (SSO)\nthrough an identity provider such as Okta, Azure AD, or Google\nWorkspace. Once enabled, all members of that organization must log in\nthrough the identity provider's login page \u2014 the standard email and\npassword login screen is disabled for that organization.",
+      "An account owner on the Enterprise plan can enable SSO from\nOrganization Settings then Security then Single Sign-On. You will need\nyour identity provider's metadata URL or XML file to complete setup.",
+      "Organizations using enterprise SSO manage two-factor authentication\nthrough their identity provider's own settings, not through this\nin-app 2FA flow.",
+      "If your organization has enterprise single sign-on enabled, this\nconsumer password reset flow does not apply to you. See the SSO and\nEnterprise Login document for the correct process \u2014 resetting a\npassword here will not affect your SSO login.",
+      "Disabling SSO reverts all members to standard email and password\nlogin. Members who never had a password set (because they only ever\nlogged in via SSO) will need to use the \"forgot password\" flow once\nto set one, exactly like a new consumer account."
+    ],
+    "ground_truth": "Organizations on the Enterprise plan can enable SSO through an identity provider such as Okta, Azure AD, or Google Workspace. Once enabled, all members must log in through the identity provider's page instead of the standard email/password screen."
+  },
+  "q05": {
+    "question": "Can I reset my password if my organization uses SSO?",
+    "answer": "No, you cannot reset your password through the application if your organization uses SSO. Because SSO accounts are managed entirely by your organization's identity provider rather than the application itself, the standard in-app password reset flow is disabled for these users. If you are unable to log in, you must contact your organization's IT administrator to have your credentials reset directly within the identity provider. Attempting to use the consumer password reset flow will not affect your SSO login.",
+    "contexts": [
+      "There is no in-app password reset for SSO accounts, because the\npassword itself is managed entirely by your organization's identity\nprovider, not by us. If you cannot log in, contact your organization's\nIT administrator to reset your credentials in the identity provider\ndirectly. We cannot reset an SSO user's password on our end.",
+      "If your organization has enterprise single sign-on enabled, this\nconsumer password reset flow does not apply to you. See the SSO and\nEnterprise Login document for the correct process \u2014 resetting a\npassword here will not affect your SSO login.",
+      "Organizations on the Enterprise plan can enable single sign-on (SSO)\nthrough an identity provider such as Okta, Azure AD, or Google\nWorkspace. Once enabled, all members of that organization must log in\nthrough the identity provider's login page \u2014 the standard email and\npassword login screen is disabled for that organization.",
+      "Disabling SSO reverts all members to standard email and password\nlogin. Members who never had a password set (because they only ever\nlogged in via SSO) will need to use the \"forgot password\" flow once\nto set one, exactly like a new consumer account.",
+      "An account owner on the Enterprise plan can enable SSO from\nOrganization Settings then Security then Single Sign-On. You will need\nyour identity provider's metadata URL or XML file to complete setup."
+    ],
+    "ground_truth": "No. There is no in-app password reset for SSO accounts, since the identity provider manages the password, not the platform. You must contact your organization's IT administrator instead."
+  },
+  "q06": {
+    "question": "How do I enable SSO for my organization?",
+    "answer": "To enable single sign-on (SSO) for an organization on the Enterprise plan, the account owner must navigate to the 'Organization Settings' menu, select 'Security,' and then choose 'Single Sign-On.' To finalize the configuration, you will be required to provide either the metadata URL or the XML file associated with your chosen identity provider, such as Okta, Azure AD, or Google Workspace.",
+    "contexts": [
+      "Organizations on the Enterprise plan can enable single sign-on (SSO)\nthrough an identity provider such as Okta, Azure AD, or Google\nWorkspace. Once enabled, all members of that organization must log in\nthrough the identity provider's login page \u2014 the standard email and\npassword login screen is disabled for that organization.",
+      "An account owner on the Enterprise plan can enable SSO from\nOrganization Settings then Security then Single Sign-On. You will need\nyour identity provider's metadata URL or XML file to complete setup.",
+      "Organizations using enterprise SSO manage two-factor authentication\nthrough their identity provider's own settings, not through this\nin-app 2FA flow.",
+      "There is no in-app password reset for SSO accounts, because the\npassword itself is managed entirely by your organization's identity\nprovider, not by us. If you cannot log in, contact your organization's\nIT administrator to reset your credentials in the identity provider\ndirectly. We cannot reset an SSO user's password on our end.",
+      "If your organization has enterprise single sign-on enabled, this\nconsumer password reset flow does not apply to you. See the SSO and\nEnterprise Login document for the correct process \u2014 resetting a\npassword here will not affect your SSO login."
+    ],
+    "ground_truth": "An account owner on the Enterprise plan can enable SSO from Organization Settings, then Security, then Single Sign-On, using the identity provider's metadata URL or XML file."
+  },
+  "q07": {
+    "question": "How do I set up two-factor authentication?",
+    "answer": "The method for setting up two-factor authentication (2FA) depends on your organization's plan type. For standard accounts, you can enable 2FA by navigating to Settings, then Security, and selecting Two-Factor Authentication; from there, you must scan the provided QR code using an authenticator app like Google Authenticator or Authy and enter the 6-digit code to confirm the setup. Once enabled, you will be provided with 10 single-use backup codes that should be stored securely in case you lose access to your authenticator app. Conversely, if your organization uses enterprise SSO, you do not use the in-app 2FA flow; instead, 2FA is managed directly through your identity provider's own settings.",
+    "contexts": [
+      "Go to Settings then Security then Two-Factor Authentication and scan\nthe QR code with an authenticator app such as Google Authenticator or\nAuthy. Enter the 6-digit code shown in the app to confirm setup.",
+      "Organizations using enterprise SSO manage two-factor authentication\nthrough their identity provider's own settings, not through this\nin-app 2FA flow.",
+      "An account owner on the Enterprise plan can enable SSO from\nOrganization Settings then Security then Single Sign-On. You will need\nyour identity provider's metadata URL or XML file to complete setup.",
+      "After enabling 2FA, you are shown 10 single-use backup codes. Store\nthese somewhere safe \u2014 each code can be used once if you lose access\nto your authenticator app.",
+      "Organizations on the Enterprise plan can enable single sign-on (SSO)\nthrough an identity provider such as Okta, Azure AD, or Google\nWorkspace. Once enabled, all members of that organization must log in\nthrough the identity provider's login page \u2014 the standard email and\npassword login screen is disabled for that organization."
+    ],
+    "ground_truth": "Go to Settings, then Security, then Two-Factor Authentication, and scan the QR code with an authenticator app. Enter the 6-digit code shown to confirm setup."
+  },
+  "q08": {
+    "question": "How many backup codes do I get for 2FA?",
+    "answer": "Upon enabling two-factor authentication, you are provided with 10 single-use backup codes. It is recommended that you store these codes in a secure location, as they serve as a recovery method should you lose access to your authenticator app.",
+    "contexts": [
+      "After enabling 2FA, you are shown 10 single-use backup codes. Store\nthese somewhere safe \u2014 each code can be used once if you lose access\nto your authenticator app.",
+      "Organizations using enterprise SSO manage two-factor authentication\nthrough their identity provider's own settings, not through this\nin-app 2FA flow.",
+      "If you lose your device and have no backup codes, contact support\nwith proof of account ownership. Account recovery in this case can\ntake up to 48 hours for security review.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit.",
+      "Go to Settings then Security then Two-Factor Authentication and scan\nthe QR code with an authenticator app such as Google Authenticator or\nAuthy. Enter the 6-digit code shown in the app to confirm setup."
+    ],
+    "ground_truth": "You are given 10 single-use backup codes after enabling 2FA."
+  },
+  "q09": {
+    "question": "What happens if I lose access to my authenticator app and have no backup codes?",
+    "answer": "If you lose access to your authenticator app and do not have your backup codes, you must contact support and provide proof of account ownership. Once this is initiated, the account recovery process involves a security review that can take up to 48 hours to complete.",
+    "contexts": [
+      "After enabling 2FA, you are shown 10 single-use backup codes. Store\nthese somewhere safe \u2014 each code can be used once if you lose access\nto your authenticator app.",
+      "If you lose your device and have no backup codes, contact support\nwith proof of account ownership. Account recovery in this case can\ntake up to 48 hours for security review.",
+      "Go to Settings then Security then Two-Factor Authentication and scan\nthe QR code with an authenticator app such as Google Authenticator or\nAuthy. Enter the 6-digit code shown in the app to confirm setup.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access.",
+      "There is no in-app password reset for SSO accounts, because the\npassword itself is managed entirely by your organization's identity\nprovider, not by us. If you cannot log in, contact your organization's\nIT administrator to reset your credentials in the identity provider\ndirectly. We cannot reset an SSO user's password on our end."
+    ],
+    "ground_truth": "Contact support with proof of account ownership. Account recovery in this case can take up to 48 hours for security review."
+  },
+  "q10": {
+    "question": "What is the API rate limit for free tier accounts?",
+    "answer": "Free tier accounts are subject to specific usage caps to manage API traffic. These accounts are restricted to a maximum of 60 requests per minute and a total of 5,000 requests per day.",
+    "contexts": [
+      "Free tier accounts are limited to 60 requests per minute and 5,000\nrequests per day. Pro tier accounts are limited to 600 requests per\nminute and 100,000 requests per day. Enterprise limits are negotiated\nper contract.",
+      "The account has exceeded its rate limit. See the API Rate Limits\ndocument for the retry behavior and how to request a higher limit.",
+      "Pro tier customers can request a temporary rate limit increase by\ncontacting support with their expected peak usage. Increases are\ntypically approved within one business day.",
+      "Every API response includes `X-RateLimit-Limit`, `X-RateLimit-Remaining`,\nand `X-RateLimit-Reset` headers so clients can track their usage\nwithout guessing.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access."
+    ],
+    "ground_truth": "Free tier accounts are limited to 60 requests per minute and 5,000 requests per day."
+  },
+  "q11": {
+    "question": "What happens when I exceed the API rate limit?",
+    "answer": "When you exceed your API rate limit, the system returns a 429 status code to indicate that the request was unsuccessful. To assist with recovery, the response includes a `Retry-After` header, which specifies the exact number of seconds you must wait before attempting your next request. Additionally, if you continue to receive 429 errors within a short timeframe, the system may impose a temporary IP-level throttle on top of the existing account-level limit.",
+    "contexts": [
+      "The account has exceeded its rate limit. See the API Rate Limits\ndocument for the retry behavior and how to request a higher limit.",
+      "Every API response includes `X-RateLimit-Limit`, `X-RateLimit-Remaining`,\nand `X-RateLimit-Reset` headers so clients can track their usage\nwithout guessing.",
+      "Pro tier customers can request a temporary rate limit increase by\ncontacting support with their expected peak usage. Increases are\ntypically approved within one business day.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit.",
+      "The API key is missing, invalid, or expired. Generate a new key from\nDeveloper Settings then API Keys."
+    ],
+    "ground_truth": "Requests beyond the limit return a 429 status code with a Retry-After header indicating how many seconds to wait before retrying."
+  },
+  "q12": {
+    "question": "How can I request a higher API rate limit?",
+    "answer": "When you exceed your API rate limit, the system returns a 429 status code to indicate that the request was unsuccessful. To assist with recovery, the response includes a `Retry-After` header, which specifies the exact number of seconds you must wait before attempting your next request. Additionally, if you continue to receive 429 errors within a short timeframe, the system may impose a temporary IP-level throttle on top of the existing account-level limit.",
+    "contexts": [],
+    "ground_truth": "Pro tier customers can request a temporary rate limit increase by contacting support with their expected peak usage; increases are typically approved within one business day."
+  },
+  "q13": {
+    "question": "What does a 401 error mean?",
+    "answer": "The provided documentation does not contain information regarding a 401 error. The available text covers error handling for unexpected server errors (which suggest checking the `X-Request-Id`), 429 status codes related to rate limiting, and request body schema validation errors, but it does not define or explain 401 status codes.",
+    "contexts": [
+      "An unexpected error occurred on our end. These are automatically\nlogged and investigated. If it persists for more than a few minutes,\ncheck the status page or contact support with the `X-Request-Id`\nheader value from the failed response.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit.",
+      "The request body failed schema validation. The response includes a\n`details` array listing which fields failed and why."
+    ],
+    "ground_truth": "A 401 Unauthorized error means the API key is missing, invalid, or expired. Generate a new key from Developer Settings, then API Keys."
+  },
+  "q14": {
+    "question": "What should I do if I get a 500 error?",
+    "answer": "If you encounter a 500-level error, it indicates an unexpected issue on the server side that is being automatically logged and investigated. You should wait a few minutes to see if the issue resolves itself; if the error persists, you should check the status page for updates or contact support. When contacting support, be sure to provide the `X-Request-Id` header value from the failed response to help them identify the specific error.",
+    "contexts": [
+      "An unexpected error occurred on our end. These are automatically\nlogged and investigated. If it persists for more than a few minutes,\ncheck the status page or contact support with the `X-Request-Id`\nheader value from the failed response.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access.",
+      "If you lose your device and have no backup codes, contact support\nwith proof of account ownership. Account recovery in this case can\ntake up to 48 hours for security review.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for."
+    ],
+    "ground_truth": "500 errors are automatically logged and investigated. If it persists for more than a few minutes, check the status page or contact support with the X-Request-Id header value from the failed response."
+  },
+  "q15": {
+    "question": "What does a 403 error mean?",
+    "answer": "The provided documentation does not define a 403 error. While the document outlines procedures for handling unexpected errors, rate limiting (429 status codes), schema validation failures, and payment issues, it does not contain information regarding the specific meaning or handling of a 403 status code.",
+    "contexts": [
+      "An unexpected error occurred on our end. These are automatically\nlogged and investigated. If it persists for more than a few minutes,\ncheck the status page or contact support with the `X-Request-Id`\nheader value from the failed response.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit.",
+      "The API key is missing, invalid, or expired. Generate a new key from\nDeveloper Settings then API Keys.",
+      "The request body failed schema validation. The response includes a\n`details` array listing which fields failed and why.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access."
+    ],
+    "ground_truth": "A 403 Forbidden error means the API key is valid but doesn't have permission for this action; check that the key has the correct scopes assigned."
+  },
+  "q16": {
+    "question": "When am I charged for my subscription?",
+    "answer": "The timing of your subscription charges depends on the billing frequency of your chosen plan:\n\n* For monthly plans, you are charged on the same calendar day each month as your original signup date [1].\n* For annual plans, you are charged once per year on the anniversary of your signup date [1].\n* If you choose to upgrade your plan mid-cycle, you will be charged a prorated amount immediately to cover the remainder of your current billing period, followed by the full price of the new plan on your next regular billing date [3].",
+    "contexts": [
+      "Monthly plans are charged on the same calendar day each month as your\noriginal signup date. Annual plans are charged once per year on the\nsignup anniversary.",
+      "Refunds are available within 14 days of the original charge for any\npaid plan. Requests after 14 days are evaluated on a case-by-case\nbasis and are not guaranteed.",
+      "Upgrading mid-cycle charges a prorated amount immediately for the\nremainder of the current cycle, then bills the full new plan price on\nthe next regular billing date.",
+      "Go to Billing then Payment History, select the charge, and click\nRequest Refund. Refunds are processed to the original payment method\nwithin 5-10 business days.",
+      "Pro tier customers can request a temporary rate limit increase by\ncontacting support with their expected peak usage. Increases are\ntypically approved within one business day."
+    ],
+    "ground_truth": "Monthly plans are charged on the same calendar day each month as the original signup date. Annual plans are charged once per year on the signup anniversary."
+  },
+  "q17": {
+    "question": "What happens if my payment fails?",
+    "answer": "If a payment fails, the system will automatically attempt to retry the transaction three times over a period of seven days. If these retries are unsuccessful, your account will be downgraded to the free tier. Following this downgrade, you will receive an email containing a link that allows you to update your payment information and restore your account access.",
+    "contexts": [
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access.",
+      "An unexpected error occurred on our end. These are automatically\nlogged and investigated. If it persists for more than a few minutes,\ncheck the status page or contact support with the `X-Request-Id`\nheader value from the failed response.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for.",
+      "Go to Billing then Payment History, select the charge, and click\nRequest Refund. Refunds are processed to the original payment method\nwithin 5-10 business days.",
+      "Billing dates cannot be changed directly, but canceling and\nre-subscribing will reset it to the new signup date. Note this may\nresult in a gap in paid access if not timed carefully."
+    ],
+    "ground_truth": "A failed payment is retried 3 times over 7 days. If all retries fail, the account is downgraded to the free tier and an email is sent with a link to update the payment method and restore access."
+  },
+  "q18": {
+    "question": "What happens if I upgrade my plan in the middle of a billing cycle?",
+    "answer": "When you upgrade your plan mid-cycle, you are charged a prorated amount immediately to cover the remainder of your current billing period. Following this initial prorated charge, you will be billed the full price of the new plan starting on your next regularly scheduled billing date.",
+    "contexts": [
+      "Upgrading mid-cycle charges a prorated amount immediately for the\nremainder of the current cycle, then bills the full new plan price on\nthe next regular billing date.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for.",
+      "Billing dates cannot be changed directly, but canceling and\nre-subscribing will reset it to the new signup date. Note this may\nresult in a gap in paid access if not timed carefully.",
+      "Annual plans are refundable on a prorated basis within the first 30\ndays of the annual term, after which no refund is issued for the\nremainder of the year if you cancel.",
+      "We retry a failed payment 3 times over 7 days. If all retries fail,\nthe account is downgraded to the free tier and you will receive an\nemail with a link to update your payment method and restore access."
+    ],
+    "ground_truth": "Upgrading mid-cycle charges a prorated amount immediately for the remainder of the current cycle, then bills the full new plan price on the next regular billing date."
+  },
+  "q19": {
+    "question": "Can I get a refund on my annual plan after 30 days?",
+    "answer": "No, you cannot receive a refund on an annual plan after the first 30 days of the annual term. While annual plans are eligible for a prorated refund during that initial 30-day window, the policy explicitly states that no refunds are issued for the remainder of the year once that period has passed.",
+    "contexts": [
+      "Annual plans are refundable on a prorated basis within the first 30\ndays of the annual term, after which no refund is issued for the\nremainder of the year if you cancel.",
+      "Refunds are available within 14 days of the original charge for any\npaid plan. Requests after 14 days are evaluated on a case-by-case\nbasis and are not guaranteed.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for.",
+      "Deleted accounts enter a 30-day grace period during which the account\ncan be restored by logging back in. After 30 days, all data is\npermanently and irreversibly deleted.",
+      "Go to Billing then Payment History, select the charge, and click\nRequest Refund. Refunds are processed to the original payment method\nwithin 5-10 business days."
+    ],
+    "ground_truth": "No. Annual plans are refundable on a prorated basis only within the first 30 days of the annual term; after that, no refund is issued for the remainder of the year."
+  },
+  "q20": {
+    "question": "How do I request a refund?",
+    "answer": "To request a refund, you must navigate to the 'Billing' section of your account and select 'Payment History.' From there, choose the specific charge you wish to be refunded and click the 'Request Refund' button. Once processed, the funds are returned to your original payment method within 5-10 business days.",
+    "contexts": [
+      "Go to Billing then Payment History, select the charge, and click\nRequest Refund. Refunds are processed to the original payment method\nwithin 5-10 business days.",
+      "Refunds are available within 14 days of the original charge for any\npaid plan. Requests after 14 days are evaluated on a case-by-case\nbasis and are not guaranteed.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for.",
+      "Annual plans are refundable on a prorated basis within the first 30\ndays of the annual term, after which no refund is issued for the\nremainder of the year if you cancel.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit."
+    ],
+    "ground_truth": "Go to Billing, then Payment History, select the charge, and click Request Refund. Refunds are processed to the original payment method within 5-10 business days."
+  },
+  "q21": {
+    "question": "What is the standard refund window?",
+    "answer": "The standard refund window for paid plans is 14 days from the date of the original charge. Requests submitted after this 14-day period are not guaranteed and are instead evaluated on a case-by-case basis. Additionally, for annual plans, there is a specific provision allowing for a prorated refund if the request is made within the first 30 days of the annual term; after this 30-day window, no refunds are issued for the remainder of the year.",
+    "contexts": [
+      "Go to Billing then Payment History, select the charge, and click\nRequest Refund. Refunds are processed to the original payment method\nwithin 5-10 business days.",
+      "Refunds are available within 14 days of the original charge for any\npaid plan. Requests after 14 days are evaluated on a case-by-case\nbasis and are not guaranteed.",
+      "Annual plans are refundable on a prorated basis within the first 30\ndays of the annual term, after which no refund is issued for the\nremainder of the year if you cancel.",
+      "Downgrading a plan does not automatically trigger a refund for the\nunused portion of the current billing cycle. You will continue to\nhave access to your previous plan's features until the end of the\ncycle you already paid for.",
+      "Requests beyond the limit return a 429 status code with a `Retry-After`\nheader indicating how many seconds to wait before retrying. Repeated\n429s within a short window may trigger a temporary IP-level throttle\nin addition to the account-level limit."
+    ],
+    "ground_truth": "Refunds are available within 14 days of the original charge for any paid plan. Requests after 14 days are evaluated case-by-case and are not guaranteed."
+  },
+  "q22": {
+    "question": "How do I delete my account?",
+    "answer": "To delete your account, navigate to the 'Settings' menu, select 'Account,' and then choose the 'Delete Account' option. Once initiated, you will receive a confirmation link at your registered email address that must be used to finalize the process. Please note that once deleted, the account enters a 30-day grace period during which you can restore access by logging back in; after this period, all data is permanently and irreversibly removed.",
+    "contexts": [
+      "Go to Settings then Account then Delete Account. You will be asked to\nconfirm via a link sent to your registered email address.",
+      "Deleting an organization account requires confirmation from the\naccount owner and removes access for all members immediately, though\nthe same 30-day grace period and data retention rules apply.",
+      "Deleted accounts enter a 30-day grace period during which the account\ncan be restored by logging back in. After 30 days, all data is\npermanently and irreversibly deleted.",
+      "Go to Settings then Security then Reset Password. Enter the email\naddress associated with your account and a reset link will be sent.\nThe link expires 24 hours after it is issued. If it expires, request\na new one from the same screen.",
+      "All personal data, uploaded files, and API keys are deleted. Billing\nrecords required for tax and legal compliance are retained separately\nfor 7 years, but are no longer linked to an active account."
+    ],
+    "ground_truth": "Go to Settings, then Account, then Delete Account. You'll be asked to confirm via a link sent to your registered email address."
+  },
+  "q23": {
+    "question": "What happens during the grace period after I delete my account?",
+    "answer": "When an account is deleted, it enters a 30-day grace period. During this time, the account remains recoverable; you can restore it simply by logging back into the account. However, once this 30-day window expires, all associated data is permanently and irreversibly deleted from the system.",
+    "contexts": [
+      "Deleted accounts enter a 30-day grace period during which the account\ncan be restored by logging back in. After 30 days, all data is\npermanently and irreversibly deleted.",
+      "Deleting an organization account requires confirmation from the\naccount owner and removes access for all members immediately, though\nthe same 30-day grace period and data retention rules apply.",
+      "Go to Settings then Account then Delete Account. You will be asked to\nconfirm via a link sent to your registered email address.",
+      "After 5 failed login attempts, the account is locked for 15 minutes.\nDuring this window, a password reset link can still be requested and\nwill unlock the account immediately once used.",
+      "Go to Settings then Security then Reset Password. Enter the email\naddress associated with your account and a reset link will be sent.\nThe link expires 24 hours after it is issued. If it expires, request\na new one from the same screen."
+    ],
+    "ground_truth": "Deleted accounts enter a 30-day grace period during which the account can be restored simply by logging back in. After 30 days, all data is permanently deleted."
+  },
+  "q24": {
+    "question": "Are my billing records deleted when I delete my account?",
+    "answer": "No, your billing records are not deleted when you delete your account. While personal data, uploaded files, and API keys are permanently removed after the 30-day grace period, billing records are retained for 7 years to satisfy tax and legal compliance requirements. Once the account is deleted, these records are kept separately and are no longer linked to an active account.",
+    "contexts": [
+      "All personal data, uploaded files, and API keys are deleted. Billing\nrecords required for tax and legal compliance are retained separately\nfor 7 years, but are no longer linked to an active account.",
+      "Deleting an organization account requires confirmation from the\naccount owner and removes access for all members immediately, though\nthe same 30-day grace period and data retention rules apply.",
+      "Deleted accounts enter a 30-day grace period during which the account\ncan be restored by logging back in. After 30 days, all data is\npermanently and irreversibly deleted.",
+      "Go to Settings then Account then Delete Account. You will be asked to\nconfirm via a link sent to your registered email address.",
+      "Billing dates cannot be changed directly, but canceling and\nre-subscribing will reset it to the new signup date. Note this may\nresult in a gap in paid access if not timed carefully."
+    ],
+    "ground_truth": "No. Billing records required for tax and legal compliance are retained separately for 7 years, but are no longer linked to the active account."
+  }
+}

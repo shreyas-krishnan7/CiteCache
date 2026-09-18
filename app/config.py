@@ -83,7 +83,7 @@ class Settings:
     rerank_enabled: bool = os.getenv("RERANK_ENABLED", "true").lower() == "true"
     rerank_model: str = os.getenv("RERANK_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
     rerank_candidate_pool_size: int = int(os.getenv("RERANK_CANDIDATE_POOL_SIZE", "15"))
-    rerank_top_n: int = int(os.getenv("RERANK_TOP_N", "5"))
+    rerank_top_n: int = int(os.getenv("RERANK_TOP_N", "10"))
 
     # --- Metrics / instrumentation ---
     metrics_log_path: str = os.getenv("METRICS_LOG_PATH", "data/metrics_log.jsonl")

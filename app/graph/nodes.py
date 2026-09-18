@@ -37,12 +37,6 @@ def serve_cached_node(state: GraphState) -> dict:
 
 
 def hybrid_retrieve_node(state: GraphState) -> dict:
-    # When reranking is enabled, pull a LARGER candidate pool
-    # (rerank_candidate_pool_size) instead of the small final count --
-    # this is what gives the actually-relevant chunk a real chance to
-    # survive into context even when a topically-similar distractor
-    # also ranks highly on dense/BM25/RRF alone. The rerank node then
-    # narrows this pool back down using cross-encoder scores.
     pool_size = settings.rerank_candidate_pool_size if settings.rerank_enabled else settings.final_top_k
     chunks = hybrid_retrieve(
         state["query"], state["client"], state["collection"], state["bm25_index"],
