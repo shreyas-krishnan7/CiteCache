@@ -47,7 +47,9 @@ class Settings:
     llm_rate_limit_default_delay_seconds: float = float(os.getenv("LLM_RATE_LIMIT_DEFAULT_DELAY_SECONDS", "15"))
 
     # --- Generation ---
-    generation_max_tokens: int = int(os.getenv("GENERATION_MAX_TOKENS", "800"))
+    # Covers the answer AND its per-claim citations in one JSON object; a cap that
+    # binds truncates the JSON mid-string and every retry fails the same way.
+    generation_max_tokens: int = int(os.getenv("GENERATION_MAX_TOKENS", "2048"))
     generation_temperature: float = float(os.getenv("GENERATION_TEMPERATURE", "0.0"))
     structured_output_max_retries: int = int(os.getenv("STRUCTURED_OUTPUT_MAX_RETRIES", "2"))
 
@@ -94,6 +96,14 @@ class Settings:
     # duplicate chunks from re-uploading the same demo files. Turn off
     # once you have a corpus you want to persist across restarts.
     clear_data_on_startup: bool = os.getenv("CLEAR_DATA_ON_STARTUP", "true").lower() == "true"
+
+    # --- Auth (React frontend) ---
+    mongodb_uri: str | None = os.getenv("MONGODB_URI") or None
+    mongodb_db: str = os.getenv("MONGODB_DB", "citecache")
+    jwt_secret: str | None = os.getenv("JWT_SECRET") or None
+    jwt_expire_days: int = int(os.getenv("JWT_EXPIRE_DAYS", "7"))
+    # True in production (HTTPS); false lets the cookie work on http://localhost.
+    cookie_secure: bool = os.getenv("COOKIE_SECURE", "false").lower() == "true"
 
 
 settings = Settings()

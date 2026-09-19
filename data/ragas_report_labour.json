@@ -1,0 +1,346 @@
+{
+  "b01": {
+    "question": "What is the punishment for compelling a person to render bonded labour?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8668344153420544,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b02": {
+    "question": "Who bears the burden of proof when a debt is claimed to be a bonded debt?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8730085047773501,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b03": {
+    "question": "What happened to bonded debts when the Act came into force?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.77483252190517,
+    "context_recall": 1.0,
+    "factual_correctness": 0.4,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b04": {
+    "question": "Can a freed bonded labourer be evicted from their homestead?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.891578709305063,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b05": {
+    "question": "Who chairs a district Vigilance Committee and how many members must belong to the Scheduled Castes or Scheduled Tribes?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8810364307538826,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b06": {
+    "question": "What is the penalty if a creditor accepts payment against a debt that has already been extinguished?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8044995523678958,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b07": {
+    "question": "When is the Bonded Labour System (Abolition) Act deemed to have come into force?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9398610842390784,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "b08": {
+    "question": "What is the punishment for abetting an offence under the Bonded Labour System (Abolition) Act?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9132442497601249,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w01": {
+    "question": "What is the overtime rate under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8943112172120365,
+    "context_recall": 1.0,
+    "factual_correctness": 0.89,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w02": {
+    "question": "By when must an employer pay wages to a monthly-paid employee?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7879656198905932,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w03": {
+    "question": "When must wages be paid to an employee who has been dismissed or has resigned?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8908693188317837,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w04": {
+    "question": "What is the maximum total deduction that can be made from an employee's wages in a wage period?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8310302481001658,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w05": {
+    "question": "What limits apply to fines imposed on an employee, and can a 14-year-old be fined?",
+    "faithfulness": 0.9,
+    "response_relevancy": 0.7869145775272299,
+    "context_recall": 1.0,
+    "factual_correctness": 0.43,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w06": {
+    "question": "What is the minimum bonus payable under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9219611289995521,
+    "context_recall": 1.0,
+    "factual_correctness": 0.6,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w07": {
+    "question": "Within what time must bonus be paid?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8191550570746022,
+    "context_recall": 1.0,
+    "factual_correctness": 0.55,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w08": {
+    "question": "What disqualifies an employee from receiving bonus?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8900984614532108,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w09": {
+    "question": "What is the time limit for filing a claim under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9203351915556216,
+    "context_recall": 1.0,
+    "factual_correctness": 0.57,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w10": {
+    "question": "What is the penalty for an employer who pays an employee less than the amount due, and what happens on a repeat offence?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8675320267714001,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w11": {
+    "question": "How often must minimum wages be reviewed or revised?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8348298888225694,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w12": {
+    "question": "Is house rent allowance included in 'wages' under the Code on Wages?",
+    "faithfulness": 0.8571428571428571,
+    "response_relevancy": 0.9568423281423283,
+    "context_recall": 1.0,
+    "factual_correctness": 0.2,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w13": {
+    "question": "Can an offence under the Code on Wages be compounded, and at what cost?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9451426804535162,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "w14": {
+    "question": "Who is excluded from the definition of 'worker' under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9674597442897399,
+    "context_recall": 1.0,
+    "factual_correctness": 0.95,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o01": {
+    "question": "How many hours a day and days a week can a worker be required to work under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8676763111662898,
+    "context_recall": 1.0,
+    "factual_correctness": 0.33,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o02": {
+    "question": "What overtime rate applies under the OSH Code and is the worker's consent required?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8109330300908805,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o03": {
+    "question": "How much annual leave with wages is a worker entitled to under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9149296572412556,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o04": {
+    "question": "When must an employer appoint a safety officer?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8178308744709248,
+    "context_recall": 1.0,
+    "factual_correctness": 0.77,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o05": {
+    "question": "When is a canteen required, and when is a creche required?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8575579614700867,
+    "context_recall": 1.0,
+    "factual_correctness": 0.29,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o06": {
+    "question": "Can women be employed at night under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8503099589625798,
+    "context_recall": 1.0,
+    "factual_correctness": 0.89,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o07": {
+    "question": "Within how many days must a new establishment apply for registration?",
+    "faithfulness": 0.6,
+    "response_relevancy": 0.7526024422971472,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o08": {
+    "question": "When do the contract labour provisions of the OSH Code apply?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7980506707135451,
+    "context_recall": 1.0,
+    "factual_correctness": 0.53,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o09": {
+    "question": "What happens if a contractor fails to pay wages to contract labour?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.819007085815508,
+    "context_recall": 1.0,
+    "factual_correctness": 0.73,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o10": {
+    "question": "When do the inter-State migrant worker provisions apply, and what travel benefit do such workers receive?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8392233339770545,
+    "context_recall": 1.0,
+    "factual_correctness": 0.6,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o11": {
+    "question": "Which accidents must be notified under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8035614916076224,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o12": {
+    "question": "What is the general penalty for contravening the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7297124956482778,
+    "context_recall": 1.0,
+    "factual_correctness": 0.89,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o13": {
+    "question": "What is the punishment when a safety contravention results in a worker's death?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7205760539704414,
+    "context_recall": 1.0,
+    "factual_correctness": 0.46,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o14": {
+    "question": "What counts as a 'factory' and what counts as an 'establishment' under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9412124562199233,
+    "context_recall": 1.0,
+    "factual_correctness": 0.56,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o15": {
+    "question": "What rights does an employee have when there is imminent danger at the workplace?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8586843898036892,
+    "context_recall": 1.0,
+    "factual_correctness": 0.5,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "o16": {
+    "question": "Is employment of contract labour allowed in an establishment's core activity?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8117705338788315,
+    "context_recall": 1.0,
+    "factual_correctness": 0.67,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "x01": {
+    "question": "How does the Bonded Labour Act define 'nominal wages', and how does that relate to minimum wages legislation?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9304770222510577,
+    "context_recall": 0.5,
+    "factual_correctness": 0.6,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "x02": {
+    "question": "Does the definition of 'contract labour' differ between the Code on Wages and the OSH Code?",
+    "faithfulness": 0.9166666666666666,
+    "response_relevancy": 0.8422259695561992,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "x03": {
+    "question": "Both the Code on Wages and the OSH Code provide for overtime. Do they set the same rate?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9513225549244456,
+    "context_recall": 1.0,
+    "factual_correctness": 0.75,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "x04": {
+    "question": "Does the Bonded Labour System (Abolition) Act cover contract labour and inter-State migrant workers?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9782495775035004,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  },
+  "x05": {
+    "question": "Both Codes make company officers liable for offences. What must be proved against a director?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.7909637251870633,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "gemini:gemini-3.1-flash-lite"
+  }
+}

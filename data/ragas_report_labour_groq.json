@@ -1,0 +1,58 @@
+{
+  "b02": {
+    "question": "Who bears the burden of proof when a debt is claimed to be a bonded debt?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8507075486845118,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "groq:openai/gpt-oss-120b"
+  },
+  "b07": {
+    "question": "When is the Bonded Labour System (Abolition) Act deemed to have come into force?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9103695816188105,
+    "context_recall": 1.0,
+    "factual_correctness": 0.8,
+    "judge": "groq:openai/gpt-oss-120b"
+  },
+  "w03": {
+    "question": "When must wages be paid to an employee who has been dismissed or has resigned?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.866876808609473,
+    "context_recall": 1.0,
+    "factual_correctness": 0.4,
+    "judge": "groq:openai/gpt-oss-120b"
+  },
+  "w08": {
+    "question": "What disqualifies an employee from receiving bonus?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8901865315544732,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "groq:openai/gpt-oss-120b"
+  },
+  "w11": {
+    "question": "How often must minimum wages be reviewed or revised?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8276614619520039,
+    "context_recall": 1.0,
+    "factual_correctness": 1.0,
+    "judge": "groq:openai/gpt-oss-120b"
+  },
+  "w14": {
+    "question": "Who is excluded from the definition of 'worker' under the Code on Wages?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.9456409199711159,
+    "context_recall": 1.0,
+    "factual_correctness": 0.91,
+    "judge": "groq:openai/gpt-oss-120b"
+  },
+  "o01": {
+    "question": "How many hours a day and days a week can a worker be required to work under the OSH Code?",
+    "faithfulness": 1.0,
+    "response_relevancy": 0.8684338721539452,
+    "context_recall": 1.0,
+    "factual_correctness": 0.57,
+    "judge": "groq:openai/gpt-oss-120b"
+  }
+}

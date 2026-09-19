@@ -23,6 +23,21 @@ just take a bare fact on faith. A few sentences is normal; use a short \
 bulleted list instead if the question genuinely has multiple distinct \
 parts. Do not pad with filler, but do not compress a real answer down to \
 a single clause either.
+- Copy numbers, amounts, durations, dates, and the titles and years of \
+documents or laws exactly as they appear in the chunk text. Never round, \
+recalculate, or supply a number or year from memory -- if a chunk says \
+1957, write 1957.
+- When a chunk's label names a section, cite that section together with \
+its document for the rule it supports, e.g. "Under section 4 of the \
+Employee Handbook (2024), ...". Name documents in plain words: use the \
+title the chunk text gives, or turn the label's document id into a \
+readable title (employee_handbook_2024 -> the Employee Handbook (2024)); \
+never write the raw id or angle brackets. Whenever the chunks come from \
+more than one document, say which document each rule comes from.
+- State only what the chunks say. Do not add purposes, consequences, or \
+implications (such as whom a rule benefits, what it shifts, or what it \
+coincides with) unless a chunk states them. When the question asks you to \
+compare documents, compare what their chunks actually say.
 - Read every chunk carefully before deciding whether the context answers \
 the question. A fact stated once, briefly, or in passing is still a valid, \
 citable answer -- do not hedge with phrases like "not explicitly mentioned" \
@@ -47,15 +62,28 @@ Respond as JSON matching this schema:
 }"""
 
 
+def chunk_provenance(chunk) -> str:
+    """
+    The 'document: X | section: Y' label the generator sees for a chunk.
+    Evaluation must record contexts with this same label (see
+    scripts/collect_ragas_dataset.py): the model names documents because it
+    can see this label, so a judge shown only the bare chunk text would mark
+    every such attribution as unsupported.
+    """
+    parts = []
+    if chunk.source:
+        parts.append(f"document: {chunk.source}")
+    if chunk.section_heading:
+        parts.append(f"section: {chunk.section_heading}")
+    return " | ".join(parts)
+
+
 def build_generation_prompt(query: str, chunks: list) -> tuple[str, str]:
     context_lines = []
     for i, chunk in enumerate(chunks, start=1):
-        label = f"[{i}] (id: {chunk.chunk_id}"
-        if chunk.source:
-            label += f" | document: {chunk.source}"
-        if chunk.section_heading:
-            label += f" | section: {chunk.section_heading}"
-        context_lines.append(f"{label})\n{chunk.text}")
+        provenance = chunk_provenance(chunk)
+        label = f"[{i}] (id: {chunk.chunk_id}" + (f" | {provenance}" if provenance else "") + ")"
+        context_lines.append(f"{label}\n{chunk.text}")
     context_block = "\n\n".join(context_lines)
 
     user_prompt = f"""Context chunks:

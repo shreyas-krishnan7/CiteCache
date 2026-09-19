@@ -7,6 +7,7 @@ class GraphState(TypedDict, total=False):
     client: Any
     bm25_index: Any
     collection: str
+    profile: Any  # app.corpus.CorpusProfile; the default corpus when absent
     start_time: float
 
     cache_result: Any

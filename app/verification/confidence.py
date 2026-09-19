@@ -37,6 +37,7 @@ def score_confidence(
     top_chunk,  # RetrievedChunk or None
     citation_verdicts: list[CitationVerdict],
     insufficient_context: bool,
+    weights: tuple[float, float, float] | None = None,  # (retrieval, citation, completeness)
 ) -> ConfidenceScore:
     retrieval_score = 0.0
     if top_chunk is not None and getattr(top_chunk, "dense_score", None) is not None:
@@ -45,10 +46,15 @@ def score_confidence(
     support_rate = citation_support_rate(citation_verdicts)
     completeness = 1.0 if not insufficient_context else 0.3
 
+    w_retrieval, w_citation, w_completeness = weights or (
+        settings.confidence_retrieval_weight,
+        settings.confidence_citation_weight,
+        settings.confidence_completeness_weight,
+    )
     confidence = (
-        settings.confidence_retrieval_weight * retrieval_score
-        + settings.confidence_citation_weight * support_rate
-        + settings.confidence_completeness_weight * completeness
+        w_retrieval * retrieval_score
+        + w_citation * support_rate
+        + w_completeness * completeness
     )
 
     supported = sum(1 for v in citation_verdicts if v.supported)

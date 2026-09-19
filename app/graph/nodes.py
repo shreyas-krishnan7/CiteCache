@@ -1,12 +1,17 @@
 """
 Graph nodes. Thin wrappers around plain, independently-tested
 functions -- no business logic lives here.
+
+Per-corpus parameters (collections, rerank depth, cache thresholds,
+confidence weights) come from the CorpusProfile in the state rather than
+from global settings, so one compiled graph serves every corpus.
 """
 from __future__ import annotations
 
 import time
 
 from app.config import settings
+from app.corpus import CorpusProfile, get_profile
 from app.cache.semantic_cache import cache_lookup, cache_write
 from app.retrieval.hybrid import hybrid_retrieve
 from app.retrieval.rerank import rerank
@@ -17,8 +22,17 @@ from app.metrics.tracker import log_event
 from app.graph.state import GraphState
 
 
+def _profile(state: GraphState) -> CorpusProfile:
+    return state.get("profile") or get_profile()
+
+
 def cache_lookup_node(state: GraphState) -> dict:
-    result = cache_lookup(state["query"], state["client"])
+    profile = _profile(state)
+    result = cache_lookup(
+        state["query"], state["client"],
+        threshold=profile.cache_similarity_threshold,
+        collection=profile.cache_collection,
+    )
     return {"cache_result": result}
 
 
@@ -37,16 +51,17 @@ def serve_cached_node(state: GraphState) -> dict:
 
 
 def hybrid_retrieve_node(state: GraphState) -> dict:
-    pool_size = settings.rerank_candidate_pool_size if settings.rerank_enabled else settings.final_top_k
+    profile = _profile(state)
+    pool_size = profile.rerank_candidate_pool_size if settings.rerank_enabled else profile.final_top_k
     chunks = hybrid_retrieve(
-        state["query"], state["client"], state["collection"], state["bm25_index"],
-        top_k=pool_size,
+        state["query"], state["client"], state.get("collection") or profile.doc_collection,
+        state["bm25_index"], top_k=pool_size,
     )
     return {"chunks": chunks}
 
 
 def rerank_node(state: GraphState) -> dict:
-    reranked = rerank(state["query"], state["chunks"])
+    reranked = rerank(state["query"], state["chunks"], top_n=_profile(state).rerank_top_n)
     return {"chunks": reranked}
 
 
@@ -65,7 +80,10 @@ def score_confidence_node(state: GraphState) -> dict:
     chunks = state["chunks"]
     top_chunk = chunks[0] if chunks else None
     generated = state["generated"]
-    score = _score_confidence(top_chunk, state["citation_verdicts"], generated.insufficient_context)
+    score = _score_confidence(
+        top_chunk, state["citation_verdicts"], generated.insufficient_context,
+        weights=_profile(state).confidence_weights,
+    )
     return {
         "confidence": score,
         "final_answer": generated.answer,
@@ -76,11 +94,13 @@ def score_confidence_node(state: GraphState) -> dict:
 
 
 def cache_write_node(state: GraphState) -> dict:
+    profile = _profile(state)
     score = state["confidence"]
-    if score.confidence >= settings.cache_write_confidence_threshold:
+    if score.confidence >= profile.cache_write_confidence_threshold:
         cache_write(
             query=state["query"], answer=state["final_answer"], client=state["client"],
             confidence=score.confidence, source_chunks=state["final_citations"],
+            collection=profile.cache_collection, ttl_days=profile.cache_ttl_days,
         )
         return {"cached": True}
     return {"cached": False}

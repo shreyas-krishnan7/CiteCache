@@ -38,6 +38,7 @@ from app.ingestion.vector_store import get_client
 from app.retrieval.bm25_index import build_bm25_index
 from app.cache.semantic_cache import cache_clear
 from app.graph.build_graph import build_graph
+from app.generation.prompts import chunk_provenance
 
 # Each corpus has its own golden set and its own dataset file, so
 # switching corpora doesn't overwrite the other one's collected answers.
@@ -90,6 +91,7 @@ def main() -> None:
     print("Building BM25 index...")
     bm25 = build_bm25_index(client, settings.doc_collection)
     graph = build_graph()
+    failed: list[str] = []
 
     for i, gq in enumerate(remaining, start=1):
         print(f"  [{i}/{len(remaining)}] {gq.id}: {gq.question!r}")
@@ -99,16 +101,29 @@ def main() -> None:
         # reason that has nothing to do with retrieval quality. Questions cached
         # earlier in this same run are close enough to trigger that.
         cache_clear(client)
-        state = graph.invoke({
-            "query": gq.question,
-            "client": client,
-            "bm25_index": bm25,
-            "collection": settings.doc_collection,
-            "start_time": time.perf_counter(),
-        })
+        try:
+            state = graph.invoke({
+                "query": gq.question,
+                "client": client,
+                "bm25_index": bm25,
+                "collection": settings.doc_collection,
+                "start_time": time.perf_counter(),
+            })
+        except Exception as e:
+            # Left unrecorded, so the next invocation retries it; one bad question
+            # must not stop the rest of the run.
+            print(f"    FAILED: {type(e).__name__}: {str(e)[:300]}")
+            failed.append(gq.id)
+            continue
 
         chunks = state.get("chunks") or []
-        contexts = [c.text for c in chunks]
+        # Record each context exactly as the generator saw it, label included:
+        # the judge scores the answer against these, and the answer names
+        # documents/sections because the label showed them.
+        contexts = [
+            f"[{chunk_provenance(c)}]\n{c.text}" if chunk_provenance(c) else c.text
+            for c in chunks
+        ]
         answer = state.get("final_answer", "")
 
         results[gq.id] = {
@@ -123,6 +138,9 @@ def main() -> None:
             time.sleep(INTER_QUESTION_DELAY_SECONDS)
 
     print(f"\nDone. {len(results)} questions collected in {dataset_path}.")
+    if failed:
+        raise SystemExit(f"{len(failed)} question(s) failed and were not recorded: {failed}. "
+                         f"Re-run this script to retry just those.")
     print("Next: switch to the ragas_eval/ virtual environment and run its script.")
 
 

@@ -52,7 +52,11 @@ class BM25Index:
 
 
 def build_bm25_index(client: QdrantClient, collection: str) -> BM25Index:
-    points = scroll_all_points(client, collection)
+    # A collection that was never created is reported the same way as an empty
+    # one; otherwise Qdrant's own ValueError escapes, which callers don't
+    # expect (a fresh install, or a corpus nothing has been uploaded to yet).
+    existing = {c.name for c in client.get_collections().collections}
+    points = scroll_all_points(client, collection) if collection in existing else []
     if not points:
         raise RuntimeError(
             f"No points found in collection '{collection}'. "

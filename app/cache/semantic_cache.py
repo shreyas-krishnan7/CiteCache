@@ -10,7 +10,7 @@ from qdrant_client.models import PointStruct
 
 from app.config import settings
 from app.ingestion.embeddings import embed_text
-from app.ingestion.vector_store import ensure_collection, search_vectors
+from app.ingestion.vector_store import clear_collection, ensure_collection, search_vectors
 
 
 @dataclass
@@ -36,6 +36,7 @@ def cache_lookup(
     query: str,
     client: QdrantClient,
     threshold: float | None = None,
+    collection: str | None = None,
 ) -> CacheLookupResult:
     """
     Check the semantic cache for a similar enough previous answer.
@@ -45,12 +46,13 @@ def cache_lookup(
     not expired (cached_at + ttl_days > now).
     """
     _threshold = threshold if threshold is not None else settings.cache_similarity_threshold
+    _collection = collection or settings.cache_collection
     query_vector = embed_text(query)
 
     # Make sure collection exists (first run may not have it yet)
-    ensure_collection(client, settings.cache_collection, len(query_vector))
+    ensure_collection(client, _collection, len(query_vector))
 
-    results = search_vectors(client, settings.cache_collection, query_vector, limit=1)
+    results = search_vectors(client, _collection, query_vector, limit=1)
 
     if not results:
         return CacheLookupResult(is_hit=False, best_score=0.0)
@@ -69,7 +71,7 @@ def cache_lookup(
             if age > timedelta(days=ttl_days):
                 # Expired: treat as a miss and clean up the stale entry
                 # so it doesn't keep costing a similarity search hit.
-                client.delete(collection_name=settings.cache_collection, points_selector=[best.id])
+                client.delete(collection_name=_collection, points_selector=[best.id])
                 return CacheLookupResult(is_hit=False, best_score=score)
 
         return CacheLookupResult(
@@ -94,14 +96,16 @@ def cache_write(
     client: QdrantClient,
     confidence: float = 1.0,
     source_chunks: list[str] | None = None,
+    collection: str | None = None,
+    ttl_days: int | None = None,
 ) -> str:
-    
+    _collection = collection or settings.cache_collection
     query_vector = embed_text(query)
-    ensure_collection(client, settings.cache_collection, len(query_vector))
+    ensure_collection(client, _collection, len(query_vector))
 
     point_id = str(uuid.uuid4())
     client.upsert(
-        collection_name=settings.cache_collection,
+        collection_name=_collection,
         points=[
             PointStruct(
                 id=point_id,
@@ -112,7 +116,7 @@ def cache_write(
                     "confidence": confidence,
                     "cached_at": datetime.now(timezone.utc).isoformat(),
                     "source_chunks": source_chunks or [],
-                    "ttl_days": settings.cache_ttl_days,
+                    "ttl_days": ttl_days if ttl_days is not None else settings.cache_ttl_days,
                 },
             )
         ],
@@ -120,24 +124,5 @@ def cache_write(
     return point_id
 
 
-def cache_clear(client: QdrantClient) -> None:
-    existing = [c.name for c in client.get_collections().collections]
-    if settings.cache_collection not in existing:
-        return
-
-    point_ids = []
-    offset = None
-    while True:
-        points, offset = client.scroll(
-            collection_name=settings.cache_collection,
-            limit=256,
-            offset=offset,
-            with_payload=False,
-            with_vectors=False,
-        )
-        point_ids.extend(p.id for p in points)
-        if offset is None:
-            break
-
-    if point_ids:
-        client.delete(collection_name=settings.cache_collection, points_selector=point_ids)
+def cache_clear(client: QdrantClient, collection: str | None = None) -> int:
+    return clear_collection(client, collection or settings.cache_collection)

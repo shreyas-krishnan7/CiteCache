@@ -39,6 +39,7 @@ def upsert_chunks(client: QdrantClient, collection: str, chunks, embeddings: lis
                 "doc_type": chunk.doc_type,
                 "last_updated": chunk.last_updated,
                 "chunk_index": chunk.chunk_index,
+                **chunk.metadata,
             },
         )
         for chunk, embedding in zip(chunks, embeddings)

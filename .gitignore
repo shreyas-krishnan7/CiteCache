@@ -16,9 +16,10 @@ qdrant_data/
 # Generated data
 data/index_manifest.json
 
-# IDE
+# IDE / tooling
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 

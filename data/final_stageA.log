@@ -1,0 +1,90 @@
+C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+0 already collected, 43 remaining.
+Building BM25 index...
+Built BM25 index: 526 chunks from 'citecache_docs'
+  [1/43] b01: 'What is the punishment for compelling a person to render bonded labour?'
+  [2/43] b02: 'Who bears the burden of proof when a debt is claimed to be a bonded debt?'
+  [3/43] b03: 'What happened to bonded debts when the Act came into force?'
+  [4/43] b04: 'Can a freed bonded labourer be evicted from their homestead?'
+  [5/43] b05: 'Who chairs a district Vigilance Committee and how many members must belong to the Scheduled Castes or Scheduled Tribes?'
+  [6/43] b06: 'What is the penalty if a creditor accepts payment against a debt that has already been extinguished?'
+  [7/43] b07: 'When is the Bonded Labour System (Abolition) Act deemed to have come into force?'
+  [8/43] b08: 'What is the punishment for abetting an offence under the Bonded Labour System (Abolition) Act?'
+  [9/43] w01: 'What is the overtime rate under the Code on Wages?'
+  [10/43] w02: 'By when must an employer pay wages to a monthly-paid employee?'
+  [11/43] w03: 'When must wages be paid to an employee who has been dismissed or has resigned?'
+  [12/43] w04: "What is the maximum total deduction that can be made from an employee's wages in a wage period?"
+  [13/43] w05: 'What limits apply to fines imposed on an employee, and can a 14-year-old be fined?'
+  [14/43] w06: 'What is the minimum bonus payable under the Code on Wages?'
+  [15/43] w07: 'Within what time must bonus be paid?'
+  [16/43] w08: 'What disqualifies an employee from receiving bonus?'
+  [17/43] w09: 'What is the time limit for filing a claim under the Code on Wages?'
+  [18/43] w10: 'What is the penalty for an employer who pays an employee less than the amount due, and what happens on a repeat offence?'
+  [19/43] w11: 'How often must minimum wages be reviewed or revised?'
+  [20/43] w12: "Is house rent allowance included in 'wages' under the Code on Wages?"
+  [21/43] w13: 'Can an offence under the Code on Wages be compounded, and at what cost?'
+  [generate] dropped 2 citation(s) with unrecognized chunk_id
+  [22/43] w14: "Who is excluded from the definition of 'worker' under the Code on Wages?"
+  [23/43] o01: 'How many hours a day and days a week can a worker be required to work under the OSH Code?'
+  [24/43] o02: "What overtime rate applies under the OSH Code and is the worker's consent required?"
+  [25/43] o03: 'How much annual leave with wages is a worker entitled to under the OSH Code?'
+  [26/43] o04: 'When must an employer appoint a safety officer?'
+  [27/43] o05: 'When is a canteen required, and when is a creche required?'
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\scripts\collect_ragas_dataset.py", line 137, in <module>
+    main()
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\scripts\collect_ragas_dataset.py", line 103, in main
+    state = graph.invoke({
+            ^^^^^^^^^^^^^^
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\pregel\__init__.py", line 1560, in invoke
+    for chunk in self.stream(
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\pregel\__init__.py", line 1298, in stream
+    for _ in runner.tick(
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\pregel\runner.py", line 56, in tick
+    run_with_retry(t, retry_policy)
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\pregel\retry.py", line 29, in run_with_retry
+    task.proc.invoke(task.input, config)
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\utils\runnable.py", line 409, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\utils\runnable.py", line 183, in invoke
+    ret = context.run(self.func, input, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\app\graph\nodes.py", line 69, in generate_node
+    generated = generate_answer(state["query"], state["chunks"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\app\generation\generate.py", line 20, in generate_answer
+    result = call_structured(
+             ^^^^^^^^^^^^^^^^
+  File "C:\Users\SHREYAS\OneDrive\Desktop\rag\app\generation\llm_client.py", line 222, in call_structured
+    raise RuntimeError(
+RuntimeError: Failed to get valid structured output from LLM after 3 attempts. Last error: Unterminated string starting at: line 18 column 16 (char 2738)
+C:\Users\SHREYAS\OneDrive\Desktop\rag\venv\Lib\site-packages\langgraph\checkpoint\base\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+  from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+26 already collected, 17 remaining.
+Building BM25 index...
+Built BM25 index: 526 chunks from 'citecache_docs'
+  [1/17] o05: 'When is a canteen required, and when is a creche required?'
+  [2/17] o06: 'Can women be employed at night under the OSH Code?'
+  [3/17] o07: 'Within how many days must a new establishment apply for registration?'
+  [4/17] o08: 'When do the contract labour provisions of the OSH Code apply?'
+  [5/17] o09: 'What happens if a contractor fails to pay wages to contract labour?'
+  [6/17] o10: 'When do the inter-State migrant worker provisions apply, and what travel benefit do such workers receive?'
+  [7/17] o11: 'Which accidents must be notified under the OSH Code?'
+  [8/17] o12: 'What is the general penalty for contravening the OSH Code?'
+  [9/17] o13: "What is the punishment when a safety contravention results in a worker's death?"
+  [10/17] o14: "What counts as a 'factory' and what counts as an 'establishment' under the OSH Code?"
+  [11/17] o15: 'What rights does an employee have when there is imminent danger at the workplace?'
+  [12/17] o16: "Is employment of contract labour allowed in an establishment's core activity?"
+  [13/17] x01: "How does the Bonded Labour Act define 'nominal wages', and how does that relate to minimum wages legislation?"
+  [14/17] x02: "Does the definition of 'contract labour' differ between the Code on Wages and the OSH Code?"
+  [15/17] x03: 'Both the Code on Wages and the OSH Code provide for overtime. Do they set the same rate?'
+  [16/17] x04: 'Does the Bonded Labour System (Abolition) Act cover contract labour and inter-State migrant workers?'
+  [generate] dropped 2 citation(s) with unrecognized chunk_id
+  [17/17] x05: 'Both Codes make company officers liable for offences. What must be proved against a director?'
+
+Done. 43 questions collected in data/ragas_dataset_labour.json.
+Next: switch to the ragas_eval/ virtual environment and run its script.

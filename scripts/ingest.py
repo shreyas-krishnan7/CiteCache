@@ -7,6 +7,8 @@ import pathlib
 from datetime import datetime, timezone
 
 from app.config import settings
+from app.corpus import DEFAULT_CORPUS, get_profile
+from app.cache.semantic_cache import cache_clear
 from app.ingestion.chunking import chunk_document
 from app.ingestion.embeddings import embed_texts
 from app.ingestion.extractors import extract_text, SUPPORTED_EXTENSIONS
@@ -45,7 +47,8 @@ def _find_source_files(source_path: pathlib.Path) -> list[pathlib.Path]:
     return sorted(files)
 
 
-def ingest(source_dir: str, rebuild: bool) -> None:
+def ingest(source_dir: str, rebuild: bool, corpus: str = DEFAULT_CORPUS) -> None:
+    profile = get_profile(corpus)
     client = get_client()
     source_path = pathlib.Path(source_dir)
     source_files = _find_source_files(source_path)
@@ -85,13 +88,18 @@ def ingest(source_dir: str, rebuild: bool) -> None:
     vector_size = len(embeddings[0])
 
     if rebuild:
-        deleted = clear_collection(client, settings.doc_collection)
-        print(f"Cleared {deleted} existing point(s) from '{settings.doc_collection}' before re-ingesting.")
+        deleted = clear_collection(client, profile.doc_collection)
+        print(f"Cleared {deleted} existing point(s) from '{profile.doc_collection}' before re-ingesting.")
 
-    ensure_collection(client, settings.doc_collection, vector_size)
-    upsert_chunks(client, settings.doc_collection, all_chunks, embeddings)
+    ensure_collection(client, profile.doc_collection, vector_size)
+    upsert_chunks(client, profile.doc_collection, all_chunks, embeddings)
+
+    # Cached answers came from the corpus as it was before this ingest.
+    invalidated = cache_clear(client, profile.cache_collection)
+    print(f"Invalidated {invalidated} cached answer(s) in '{profile.cache_collection}'.")
 
     manifest = {
+        "corpus": profile.name,
         "indexed_at": datetime.now(timezone.utc).isoformat(),
         "embedding_provider": settings.embedding_provider,
         "embedding_model": (
@@ -104,10 +112,11 @@ def ingest(source_dir: str, rebuild: bool) -> None:
         "chunk_overlap_tokens": settings.chunk_overlap_tokens,
         "documents": [p.name for p in source_files],
     }
-    manifest_path = pathlib.Path("data") / "index_manifest.json"
+    manifest_name = "index_manifest.json" if profile.name == DEFAULT_CORPUS else f"index_manifest_{profile.name}.json"
+    manifest_path = pathlib.Path("data") / manifest_name
     manifest_path.write_text(json.dumps(manifest, indent=2))
 
-    print(f"\nIndexed {len(all_chunks)} chunks from {len(source_files)} documents into '{settings.doc_collection}'.")
+    print(f"\nIndexed {len(all_chunks)} chunks from {len(source_files)} documents into '{profile.doc_collection}' (corpus '{profile.name}').")
     print(f"Manifest written to {manifest_path}")
 
 
@@ -115,5 +124,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ingest documents into the CiteCache document collection.")
     parser.add_argument("--source", default="data/docs", help="Directory of files to ingest.")
     parser.add_argument("--rebuild", action="store_true", help="Clear existing points before ingesting.")
+    parser.add_argument("--corpus", default=DEFAULT_CORPUS, help="Corpus to ingest into (see app/corpus.py).")
     args = parser.parse_args()
-    ingest(args.source, args.rebuild)
+    ingest(args.source, args.rebuild, args.corpus)
